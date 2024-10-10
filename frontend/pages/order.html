@@ -1,0 +1,40 @@
+<!-- public/pages/order.html -->
+<h2>Start Your Order</h2>
+<form id="order-form">
+  <!-- For MVP, we'll keep this simple -->
+  <label for="item">Select Item:</label>
+  <select id="item" name="item">
+    <option value="Green Juice">Green Juice</option>
+    <option value="Club Sandwich">Club Sandwich</option>
+    <option value="Latte">Latte</option>
+  </select>
+  <br><br>
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" name="quantity" min="1" value="1">
+  <br><br>
+  <button type="submit">Place Order</button>
+</form>
+
+<div id="order-response"></div>
+
+<script>
+  const orderForm = document.getElementById('order-form');
+  orderForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const order = {
+      item: this.item.value,
+      quantity: this.quantity.value,
+    };
+    fetch('/api/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(order),
+    })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('order-response').innerText = data.message;
+      });
+  });
+</script>

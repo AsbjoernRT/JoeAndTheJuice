@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Joe and the Juice</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sliding Navigation Menu -->
+  <nav id="sidebar">
+    <ul>
+      <li><a href="#" data-page="home">Home</a></li>
+      <li><a href="#" data-page="menu">Menu</a></li>
+      <li><a href="#" data-page="locations">Locations</a></li>
+      <li><a href="#" data-page="order">Start Order</a></li>
+      <li><a href="#" data-page="contact">Contact Us</a></li>
+      <li><a href="#" id="chat-button">Chat Support</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div id="content">
+    <header>
+      <button id="menu-toggle">☰</button>
+      <h1>Joe and the Juice</h1>
+    </header>
+    <main id="main-content">
+      <!-- Default content will be loaded here -->
+    </main>
+  </div>
+
+  <!-- Chat Modal -->
+  <div id="chat-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="close-chat">&times;</span>
+      <h2>Chat with Us</h2>
+      <p>Chat functionality coming soon!</p>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
