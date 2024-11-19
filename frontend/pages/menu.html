@@ -1,0 +1,18 @@
+<!-- public/pages/menu.html -->
+<h2>Our Menu</h2>
+<div id="menu-items">
+  <!-- Items will be loaded here via JavaScript -->
+</div>
+
+<script>
+  fetch('/api/menu')
+    .then(response => response.json())
+    .then(data => {
+      const menuItemsDiv = document.getElementById('menu-items');
+      data.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.innerHTML = `<h3>${item.name}</h3><p>${item.description}</p>`;
+        menuItemsDiv.appendChild(itemDiv);
+      });
+    });
+</script>
