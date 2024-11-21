@@ -315,6 +315,7 @@ footer {
   }
 }
 
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -750,67 +751,172 @@ footer {
 /* Alt hernede efter er chatbotten ------------------------------------------------ */
 
 /* Chatbot Trigger Button */
+/* Styling til Chatbot */
+/* Trigger Button */
 #chatbot-toggle {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff;
-    color: white;
+    background-color: #007bff; /* Primær farve */
+    color: #fff;
     border: none;
-    padding: 15px;
     border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  #chatbot-toggle:hover {
+    background-color: #0056b3; /* Mørkere nuance ved hover */
   }
   
   /* Chatbot Modal */
-  .chatbot-modal {
-    display: none;
+  #chatbot-modal {
+    display: none; /* Skjult som standard */
     position: fixed;
-    bottom: 80px;
+    bottom: 90px;
     right: 20px;
-    width: 300px;
-    max-height: 400px;
-    background-color: #fefefe;
-    border: 1px solid #888;
-    border-radius: 10px;
+    width: 350px;
+    max-width: 90%;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeInUp 0.3s ease;
     z-index: 1000;
   }
   
-  /* Modal Content */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Chatbot Modal Content */
   .chatbot-modal-content {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 500px;
+  }
+  
+  /* Chatbot Header */
+  .chatbot-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    position: relative;
   }
   
   /* Close Button */
   .chatbot-close {
-    color: #aaa;
-    align-self: flex-end;
-    font-size: 28px;
-    font-weight: bold;
-    margin-right: 10px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
     cursor: pointer;
   }
   
-  /* Messages Container */
-  #chatbot-messages {
+  /* Chatbot Messages */
+  .chatbot-messages {
     flex: 1;
-    padding: 10px;
+    padding: 15px;
     overflow-y: auto;
-    background-color: #f9f9f9;
+    background-color: #f7f7f7;
   }
   
-  /* Individual Messages */
-  .message {
-    margin-bottom: 10px;
-  }
-  
-  /* User Input */
+  /* Chatbot Input */
   #chatbot-input {
     border: none;
-    border-top: 1px solid #ccc;
-    padding: 10px;
+    border-top: 1px solid #ddd;
+    padding: 15px;
     font-size: 16px;
-    width: calc(100% - 20px);
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Message Styles */
+  .message {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message strong {
+    margin-bottom: 5px;
+  }
+  
+  .message .user-message {
+    /* align-self: flex-end; */
+    justify-content: flex-end;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 15px;
+    max-width: 80%;
+  }
+  
+  .message .bot-message {
+    align-self: flex-start;
+    background-color: #e9ecef;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0;
+    max-width: 80%;
+  }
+
+  /* Generel styling for beskeder */
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  /* Styling af afsenderdelen */
+  .sender {
+    margin-right: 10px;
+  }
+  
+  /* Chatbot ikon */
+  .chatbot-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  /* Bruger ikon */
+  .user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  /* Beskedindhold */
+  .message-content {
+    background-color: #f1f1f1;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+  }
+  
+  /* Justering af beskedens position baseret på afsender */
+  .message.user .message-content {
+    justify-content: flex-end;
+    background-color: #007bff;
+    color: #fff;
+    align-self: flex-end;
+  }
+  
+  .message.bot .message-content {
+    background-color: #e9ecef;
+    color: #333;
+    align-self: flex-start;
   }
