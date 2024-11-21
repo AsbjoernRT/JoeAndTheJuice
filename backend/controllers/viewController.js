@@ -24,3 +24,11 @@ exports.getContactPage = (req, res) => {
 exports.getCheckoutPage = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/checkout.html'));
   };
+
+  exports.getHeader = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/partials/header.html'));
+  };
+
+  exports.getFooter = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/partials/footer.html'));
+  };

@@ -242,6 +242,68 @@ footer {
     color: #777;
 }
 
+
+/* Dynamic container styling */
+#partial-container {
+    background-color: #333;     /* Mørk baggrund */
+    color: #fff;                /* Hvid tekst */
+    padding: 20px;              /* Indre margen */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Let skygge */
+  }
+  
+  /* Styling til nav (inden i dynamic-container) */
+  #partial-container nav {
+    display: flex;              /* Horisontal layout */
+    justify-content: space-between; /* Plads mellem logo og links */
+    align-items: center;        /* Centrer lodret */
+  }
+  
+  /* Logo styling */
+  #partial-container .logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;  /* Store bogstaver */
+    color: #ff6f61;             /* Fremhævet farve */
+    text-decoration: none;      /* Fjern underlinje */
+  }
+  
+  /* Navigation links */
+  #partial-container ul {
+    list-style: none;           /* Fjern punktopstilling */
+    margin: 0;
+    padding: 0;
+    display: flex;              /* Horisontal layout */
+    gap: 20px;                  /* Afstand mellem links */
+  }
+  
+  #partial-container ul li {
+    display: inline;
+  }
+  
+  #partial-container ul li a {
+    text-decoration: none;      /* Fjern underlinje */
+    color: #fff;                /* Hvid tekst */
+    font-size: 16px;
+    transition: color 0.3s;     /* Glidende overgang på hover */
+  }
+  
+  #partial-container ul li a:hover {
+    color: #ff6f61;             /* Fremhævet farve ved hover */
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    #partial-container nav {
+      flex-direction: column;   /* Vertikal layout på små skærme */
+      align-items: center;
+    }
+  
+    #partial-container ul {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;               /* Mindre afstand mellem links */
+    }
+  }
 /* Chatbot Trigger Button */
 #chatbot-toggle {
     position: fixed;
