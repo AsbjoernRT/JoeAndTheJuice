@@ -20,16 +20,21 @@
     </main>
   </div>
 
-  <!-- Chat Modal -->
-  <div id="chat-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button" id="close-chat">&times;</span>
-      <h2>Chat with Us</h2>
-      <p>Chat functionality coming soon!</p>
+  <!-- Chatbot Trigger Button -->
+  <button id="chatbot-toggle">Chat med os</button>
+
+  <!-- Chatbot Modal -->
+  <div id="chatbot-modal" class="chatbot-modal">
+    <div class="chatbot-modal-content">
+      <span id="chatbot-close" class="chatbot-close">&times;</span>
+      <div id="chatbot-messages" class="chatbot-messages"></div>
+      <input type="text" id="chatbot-input" placeholder="Skriv din besked...">
     </div>
   </div>
 
   <script src="/main.js"></script>
-  <script src="/scripts/partials.helper.js"></script>
+  <script src="/scripts/partials.helper.js"></script
+  <script src="/products.js"></script>
+  <script src="/chatbot.js"></script>
 </body>
 </html>
