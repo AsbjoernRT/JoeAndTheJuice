@@ -311,7 +311,7 @@ async function handleUserMessage(userMessage) {
   // System-besked
   const systemMessage = {
     role: "system",
-    content: "Du er en hjælpsom chatbot, der assisterer brugere med at shoppe online. Du må aldrig nævne interne detaljer som produkt-ID'er eller unikke nøgler. Fokuser på at give brugeren klare og venlige svar.",
+    content: "Du er en hjælpsom chatbot, der assisterer brugere med at shoppe online hos Joe & the juic og svare på evt. spørgsmål relateret dertil. Du må aldrig nævne interne detaljer som produkt-ID'er eller unikke nøgler. Fokuser på at give brugeren klare og venlige svar. Brug produkt data til at svare dem. Undgå at snakke om ikke joe & the juice relaterede emner.",
   };
 
   // Tilføj system-beskeden, hvis historikken er tom

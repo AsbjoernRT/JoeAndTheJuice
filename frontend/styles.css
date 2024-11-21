@@ -92,7 +92,6 @@ body {
 }
 
 h2 {
-    margin-bottom: 20px;
     font-size: 24px;
 }
 
@@ -785,7 +784,7 @@ footer {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff; /* Primær farve */
+    background-color: #f6c1d9; /* Primær farve */
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -795,10 +794,15 @@ footer {
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+    transition: transform 0.3s ease;
   }
   
   #chatbot-toggle:hover {
-    background-color: #0056b3; /* Mørkere nuance ved hover */
+    /* background-color: #0056b3; Mørkere nuance ved hover */
+    transform: scale(1.2); /* Forstør ved hover */
+    transition: transform 0.3s ease;
+    
+
   }
   
   /* Chatbot Modal */
@@ -807,7 +811,7 @@ footer {
     position: fixed;
     bottom: 90px;
     right: 20px;
-    width: 350px;
+    width: 450px;
     max-width: 90%;
     background-color: #fff;
     border-radius: 15px;
@@ -837,10 +841,15 @@ footer {
   
   /* Chatbot Header */
   .chatbot-header {
-    background-color: #007bff;
+    background-color: #f6c1d9;
     color: #fff;
     padding: 15px;
     position: relative;
+  }
+
+  .chatbot-title {
+    align-self: center;
+    padding: 15px;
   }
   
   /* Close Button */
@@ -885,7 +894,7 @@ footer {
   .message .user-message {
     /* align-self: flex-end; */
     justify-content: flex-end;
-    background-color: #007bff;
+    background-color: #f6c1d9;
     color: #fff;
     padding: 10px 15px;
     border-radius: 15px 15px 0 15px;
@@ -938,7 +947,7 @@ footer {
   /* Justering af beskedens position baseret på afsender */
   .message.user .message-content {
     justify-content: flex-end;
-    background-color: #007bff;
+    background-color: #f6c1d9;
     color: #fff;
     align-self: flex-end;
   }
