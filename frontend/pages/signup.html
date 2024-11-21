@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Sign Up</title>
+</head>
+<body>
+  <!-- Reuse header -->
+  <div id="partial-container"></div>
+
+  <!-- Sign-Up Form -->
+  <div class="login-container">
+    <h1 class="login-title">Sign Up</h1>
+    <p class="login-subtitle">Create an account to enjoy our services!</p>
+    <form action="/signup" method="POST" class="login-form">
+      
+      <!-- Fornavn -->
+      <div class="form-group">
+        <label for="fornavn">First name</label>
+        <input type="text" id="fornavn" name="fornavn" placeholder="Type your first name" required>
+      </div>
+
+      <!-- Efternavn -->
+      <div class="form-group">
+        <label for="efternavn">Last name</label>
+        <input type="text" id="efternavn" name="efternavn" placeholder="Type your last name" required>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Type your email" required>
+      </div>
+
+      <!-- Telefonnummer -->
+      <div class="form-group">
+        <label for="telefonnummer">Phone</label>
+        <input type="tel" id="telefonnummer" name="telefonnummer" placeholder="Type your phone number" required>
+      </div>
+
+      <!-- Land -->
+      <div class="form-group">
+        <label for="land">Country</label>
+        <input type="text" id="land" name="land" placeholder="Type your country" required>
+      </div>
+
+      <!-- By -->
+      <div class="form-group">
+        <label for="by">City</label>
+        <input type="text" id="by" name="by" placeholder="Type your city" required>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-group">
+        <label for="adresse">Adresse</label>
+        <input type="text" id="adresse" name="adresse" placeholder="Type your adresse" required>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">password</label>
+        <input type="text" id="password" name="password" placeholder="Type your password" required>
+      </div>
+
+       <!-- Password repeat -->
+       <div class="form-group">
+        <label for="confirm password">verify password</label>
+        <input type="text" id="confirmPassword" name="confirmPassword" placeholder="verify your password" required>
+      </div>
+
+
+      <!-- Submit Button -->
+      <button type="submit" class="button">Sign Up</button>
+    </form>
+  </div>
+
+  <!-- Reuse footer -->
+  <div id="footer-container"></div>
+
+  <script src="/scripts/partials.helper.js"></script>
+</body>
+</html>
