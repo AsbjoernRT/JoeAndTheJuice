@@ -274,7 +274,7 @@ footer {
 }
 
 #partial-container .logo img {
-  height: 80px;             /* Juster logoets størrelse */
+  height: 50px;             /* Juster logoets størrelse */
   margin-right: 10px;       /* Afstand mellem logo og tekst */
 }
 
@@ -333,6 +333,16 @@ footer {
 #joeLogoMobile {
   display: none;
 }
+
+#profilePic {
+  width: 25px;
+  margin-left: 100px;
+}
+
+#cart {
+  width: 25px;
+  margin-left: 100px;
+}
 }
 
 .hamburger .bar {
@@ -377,7 +387,7 @@ footer {
   }
 
   #profilePic {
-    width: 40px;
+    width: 25px;
   }
 
   #profileLoginText {
@@ -386,6 +396,9 @@ footer {
     align-items: center;
   }
 
+  #cart {
+    width: 25px;
+  }
 /* Header logic ends here ---------------------------------------------------------------------------------------------------- */
 
 
@@ -519,6 +532,21 @@ footer {
   font-weight: bold;
   margin-bottom: 20px;
 }
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .hero-subtitle {
+    font-size: 14px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  }
+}
+
+
 
 /* Subtitle styling */
 .hero-subtitle {
