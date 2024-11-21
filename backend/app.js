@@ -11,8 +11,7 @@ const viewRoutes = require('./routes/viewRoutes');
 const app = express();
 
 // Middleware
-// app.use(express.static(path.join(__dirname, '..', 'public')));
-// Serve static files from the 'frontend' directory
+app.use(bodyParser.json());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
