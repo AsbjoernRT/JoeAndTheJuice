@@ -243,67 +243,82 @@ footer {
 }
 
 
-/* Dynamic container styling */
+/* Styling til #partial-container */
 #partial-container {
-    background-color: #333;     /* Mørk baggrund */
-    color: #fff;                /* Hvid tekst */
-    padding: 20px;              /* Indre margen */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Let skygge */
+  background-color: #f8d7e0; /* Lyserød baggrund */
+  color: #333;              /* Mørk tekstfarve */
+  padding: 20px 30px;       /* Indre margen */
+  display: flex;            /* Horisontalt layout */
+  justify-content: space-between; /* Spred logo og links */
+  align-items: center;      /* Centrer lodret */
+  border-bottom: 3px solid #e6a8b7; /* Mørkere lyserød kant */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Let skygge */
+}
+
+/* Styling til nav (inden i #partial-container) */
+#partial-container nav {
+  display: flex;            /* Horisontal layout */
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;              /* Fyld hele containerens bredde */
+}
+
+/* Logo styling */
+#partial-container .logo {
+  display: flex;
+  align-items: center;      /* Centrer logo og tekst vertikalt */
+  font-size: 24px;          /* Tekststørrelse */
+  font-weight: bold;
+  color: #333;              /* Mørk tekstfarve */
+  text-decoration: none;    /* Fjern underlinje */
+}
+
+#partial-container .logo img {
+  height: 80px;             /* Juster logoets størrelse */
+  margin-right: 10px;       /* Afstand mellem logo og tekst */
+}
+
+/* Navigation links */
+#partial-container ul {
+  list-style: none;         /* Fjern punktopstilling */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;    
+  align-items: center;        
+  gap: 50px;                
+}
+
+#partial-container ul li a {
+  text-decoration: none;    /* Fjern underlinje */
+  color: #333;              /* Mørk tekstfarve */
+  font-size: 20px;
+  font-weight: 500;
+  transition: color 0.3s;   
+}
+
+#partial-container ul li a:hover {
+  color: #e63946;           /* Fremhæv farve ved hover */
+}
+
+/* Responsivt design */
+@media (max-width: 768px) {
+  #partial-container {
+    flex-direction: column; /* Vertikalt layout */
+    align-items: center;    /* Centrer indhold */
   }
-  
-  /* Styling til nav (inden i dynamic-container) */
+
   #partial-container nav {
-    display: flex;              /* Horisontal layout */
-    justify-content: space-between; /* Plads mellem logo og links */
-    align-items: center;        /* Centrer lodret */
+    flex-direction: column; /* Links i vertikalt layout */
   }
-  
-  /* Logo styling */
-  #partial-container .logo {
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: uppercase;  /* Store bogstaver */
-    color: #ff6f61;             /* Fremhævet farve */
-    text-decoration: none;      /* Fjern underlinje */
-  }
-  
-  /* Navigation links */
+
   #partial-container ul {
-    list-style: none;           /* Fjern punktopstilling */
-    margin: 0;
-    padding: 0;
-    display: flex;              /* Horisontal layout */
-    gap: 20px;                  /* Afstand mellem links */
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;              /* Mindre afstand mellem links */
   }
-  
-  #partial-container ul li {
-    display: inline;
-  }
-  
-  #partial-container ul li a {
-    text-decoration: none;      /* Fjern underlinje */
-    color: #fff;                /* Hvid tekst */
-    font-size: 16px;
-    transition: color 0.3s;     /* Glidende overgang på hover */
-  }
-  
-  #partial-container ul li a:hover {
-    color: #ff6f61;             /* Fremhævet farve ved hover */
-  }
-  
-  /* Responsive design */
-  @media (max-width: 768px) {
-    #partial-container nav {
-      flex-direction: column;   /* Vertikal layout på små skærme */
-      align-items: center;
-    }
-  
-    #partial-container ul {
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;               /* Mindre afstand mellem links */
-    }
-  }
+}
+
 /* Chatbot Trigger Button */
 #chatbot-toggle {
     position: fixed;
