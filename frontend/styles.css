@@ -308,16 +308,446 @@ footer {
     align-items: center;    /* Centrer indhold */
   }
 
-  #partial-container nav {
-    flex-direction: column; /* Links i vertikalt layout */
-  }
-
   #partial-container ul {
     flex-direction: column;
     align-items: center;
     gap: 10px;              /* Mindre afstand mellem links */
   }
 }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 24px;
+  width: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+.bar {
+  display: none;
+}
+#joeLogoMobile {
+  display: none;
+}
+}
+
+.hamburger .bar {
+  height: 3px;
+  width: 100%;
+  background-color: #333;
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+/* Links are hidden on mobile by default */
+@media (max-width: 768px) {
+  .menu {
+    display: flex; /* Flex for vertical stacking */
+    flex-direction: column; /* Stack links vertically */
+    position: absolute;
+    top: 20px; /* Place below navbar */
+    right: 0;
+    gap: 30px;
+    background-color: #f8d7e0; /* Match navbar background */
+    width: 100%; /* Full-width menu */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    transform: translateY(-100%); /* Start hidden above the viewport */
+    opacity: 0; /* Make invisible initially */
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Add smooth transition */
+
+  }
+
+  .menu li {
+    margin-bottom: 15px;
+  }
+
+  .menu.active {
+    transform: translateY(0); /* Slide down into view */
+    opacity: 1; /* Make visible */
+    }
+}
+
+  .hamburger {
+    display: flex; /* Show hamburger icon */
+  }
+
+  #profilePic {
+    width: 40px;
+  }
+
+  #profileLoginText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+/* Header logic ends here ---------------------------------------------------------------------------------------------------- */
+
+
+main {
+  flex: 1; /* Giver main mulighed for at fylde resten af pladsen */
+  padding: 20px; /* Tilføj evt. padding til hovedindholdet */
+}
+
+/* Footer styling */
+footer {
+  background-color: #333; /* Mørk baggrund */
+  color: white;           /* Hvid tekst */
+  padding: 40px 20px;
+  text-align: center;
+  width: 100%;            /* Sørger for, at footeren altid fylder hele bredden */
+}
+
+.footer-container {
+  max-width: 1200px;          /* Begræns bredde */
+  margin: 0 auto;             /* Centrer container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Footer Logo */
+.footer-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.footer-logo h1 {
+  font-size: 36px;            /* Stor skrift til logoet */
+  font-weight: bold;
+  color: #fff;                /* Hvid tekst */
+  letter-spacing: 2px;        /* Lidt afstand mellem bogstaver */
+}
+
+/* Footer Links */
+.footer-links {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;            /* Tillad wrapping på små skærme */
+  width: 100%;
+  gap: 20px;
+}
+
+/* Footer Columns */
+.footer-column {
+  flex: 1;                    /* Lige plads til hver kolonne */
+  min-width: 200px;           /* Minimum bredde til kolonner */
+}
+
+.footer-column h3 {
+  font-size: 18px;            /* Sektionstitler */
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #fff;                /* Hvid tekst */
+}
+
+.footer-column ul {
+  list-style: none;           /* Fjern punktopstilling */
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 10px;        /* Afstand mellem links */
+}
+
+.footer-column ul li a {
+  text-decoration: none;      /* Fjern underlinje */
+  color: #bbb;                /* Lysere grå farve */
+  font-size: 14px;
+  transition: color 0.3s;     /* Glidende overgang ved hover */
+}
+
+.footer-column ul li a:hover {
+  color: #fff;                /* Hvid farve ved hover */
+}
+
+/* Responsivt Design */
+@media (max-width: 768px) {
+  .footer-links {
+    flex-direction: column;   /* Vertikal layout på små skærme */
+    align-items: center;
+  }
+
+  .footer-column {
+    text-align: center;       /* Centrer indhold */
+  }
+}
+
+/* Frontpage styling ------------------------------------------------------------------------ */
+
+/* Hero Section Styling */
+.hero-section {
+  position: relative; /* Allows overlay and content layering */
+  height: 60vh; /* Adjust height as needed */
+  background-image: url('../assets/Joe and the Juice.jpg'); /* Link to your image */
+  background-size: cover; /* Ensures the image covers the section */
+  background-position: center; /* Centers the image */
+  display: flex; /* Enables content centering */
+  justify-content: center; /* Horizontally centers content */
+  align-items: center; /* Vertically centers content */
+  color: #fff; /* Default text color */
+}
+
+/* Dark overlay to dim the background image */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  z-index: 1; /* Ensures it's behind the content */
+}
+
+/* Hero content */
+.hero-content {
+  position: relative;
+  z-index: 2; /* Ensures it's above the overlay */
+  text-align: center;
+  max-width: 600px; /* Limit content width for better readability */
+}
+
+/* Title styling */
+.hero-title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Subtitle styling */
+.hero-subtitle {
+  font-size: 18px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Button styling */
+.hero-button {
+  background-color: #f8d7e0; /* Light pink background */
+  color: #333; /* Dark text */
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hero-button:hover {
+  background-color: #e6a8b7; /* Darker pink on hover */
+}
+
+/* Product Slider Section */
+.product-slider {
+  background-color: #333; /* Dark background */
+  color: #fff; /* White text */
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.product-slider__title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.product-slider__wrapper {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0;
+}
+
+.product-slider__item {
+  flex: 0 0 250px; /* Fixed width for items */
+  background-color: #444; /* Slightly lighter dark background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.product-slider__image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.product-slider__name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-slider__button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+/* Arrows for product slider */
+.product-slider__arrow {
+  background-color: #f8d7e0; /* Light pink for arrows */
+  color: #333; /* Dark arrow color */
+  border: none;
+  font-size: 20px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%; /* Center vertically within the product slider */
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.product-slider__arrow--left {
+  left: 10px; /* Position on the left of the slider */
+}
+
+.product-slider__arrow--right {
+  right: 10px; /* Position on the right of the slider */
+}
+
+.product-slider__arrow:hover {
+  background-color: #e6a8b7; /* Slightly darker pink on hover */
+}
+
+/* Ensure product slider has relative positioning */
+.product-slider {
+  position: relative; /* Ensures arrows are positioned relative to this section */
+}
+
+.product-slider__wrapper {
+  overflow: hidden; /* Ensures items don’t overflow the visible area */
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+/* Full Menu Button */
+.product-slider__full-menu {
+  background-color: #f8d7e0; /* Pink background */
+  color: #333;
+  border: none;
+  padding: 15px 30px;
+  margin-top: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+.product-slider__full-menu:hover {
+  background-color: #e6a8b7; /* Darker pink */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-slider__wrapper {
+    gap: 10px; /* Smaller gap on mobile */
+  }
+
+  .product-slider__item {
+    flex: 0 0 200px; /* Smaller items on mobile */
+  }
+
+  .product-slider__title {
+    font-size: 24px; /* Smaller title */
+  }
+}
+
+/* Login Page Styles -------------------------------------------------------------------------------------------------- */
+
+
+.login-container {
+  max-width: 400px;
+  margin: 60px auto; /* Center the form */
+  background-color: #fff; /* White background */
+  padding: 30px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  text-align: center;
+}
+
+.login-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+  text-align: left; /* Align labels and inputs to the left */
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.login-form input:focus {
+  border-color: #f8d7e0; /* Match your pink theme */
+  outline: none;
+  box-shadow: 0 0 4px rgba(248, 215, 224, 0.5);
+}
+
+.login-button {
+  margin-top: 10px;
+}
+
+.login-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.login-footer a {
+  color: #F6C1D9;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-footer a:hover {
+  color: #e6a8b7; /* Darker pink */
+  text-decoration: underline;
+}
+
+/* Alt hernede efter er chatbotten ------------------------------------------------ */
 
 /* Chatbot Trigger Button */
 #chatbot-toggle {

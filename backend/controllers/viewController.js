@@ -9,10 +9,6 @@ exports.getMenuPage = (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/pages/menu.html'));
 };
 
-exports.getLocationsPage = (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/pages/locations.html'));
-};
-
 exports.getOrderPage = (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/pages/order.html'));
 };
@@ -31,4 +27,12 @@ exports.getCheckoutPage = (req, res) => {
 
   exports.getFooter = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/partials/footer.html'));
+  };
+
+  exports.getLogin = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/login.html'));
+  };
+
+  exports.getSignup = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/signup.html'));
   };
