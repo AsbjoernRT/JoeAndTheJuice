@@ -11,6 +11,8 @@ router.get('/locations', viewController.getLocationsPage);
 router.get('/order', viewController.getOrderPage);
 router.get('/contact', viewController.getContactPage);
 router.get('/checkout', viewController.getCheckoutPage);
-;
+router.get('/header', viewController.getHeader);
+router.get('/footer', viewController.getFooter);
+
 
 module.exports = router;
