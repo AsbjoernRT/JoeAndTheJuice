@@ -11,12 +11,11 @@ const viewRoutes = require('./routes/viewRoutes');
 const app = express();
 
 // Middleware
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '..', 'public')));
+// app.use(express.static(path.join(__dirname, '..', 'public')));
 // Serve static files from the 'frontend' directory
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use(bodyParser.json());
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 // Din OpenAI API-nøgle fra miljøvariabler
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
