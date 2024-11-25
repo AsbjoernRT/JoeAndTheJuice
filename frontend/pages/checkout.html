@@ -6,9 +6,10 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+    <!-- Sliding Navigation Menu -->
+    <div id="partial-container"></div>
     <header>
         <div class="container">
-            <a href="#" class="logo">Your Store</a>
             <div class="progress-bar">
                 <div class="step active">Cart</div>
                 <div class="step active">Information</div>
@@ -63,33 +64,28 @@
             </div>
             <div class="order-summary">
                 <h2>Order Summary</h2>
-                <div class="order-item">
-                    <img src="product-image.jpg" alt="Product Image">
-                    <div class="item-details">
-                        <p class="item-name">Product Name</p>
-                        <p class="item-quantity">Quantity: 1</p>
-                    </div>
-                    <div class="item-price">$49.99</div>
-                </div>
+                <div id="order-items"></div> <!-- Dynamisk fyldes med produkter -->
+            
                 <div class="order-total">
                     <p>Subtotal</p>
-                    <p>$49.99</p>
+                    <p id="subtotal">$0.00</p>
                 </div>
                 <div class="order-total">
                     <p>Shipping</p>
-                    <p>Calculated at next step</p>
+                    <p id="shipping">Calculated at next step</p>
                 </div>
                 <div class="order-total total">
                     <p>Total</p>
-                    <p>$49.99</p>c
+                    <p id="total">$0.00</p>
                 </div>
             </div>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 Your Store. All rights reserved.</p>
-        </div>
-    </footer>
+    <div id="footer-container"></div>
+    
+    <script src="/scripts/main.js"></script>
+    <script src="/scripts/partials.helper.js"></script>
+    
+    <script src="/scripts/products.js"></script>
 </body>
 </html>

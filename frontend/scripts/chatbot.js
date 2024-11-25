@@ -2,6 +2,44 @@
 
 // const { log } = require("console");
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Delay opdatering af badge
+  setTimeout(() => {
+    updateCartBadge();
+  }, 50); // Forsinkelse på 1 sekund
+  
+
+  // Lyt efter ændringer i localStorage
+  window.addEventListener('storage', updateCartBadge);
+});
+
+// Funktion til at opdatere badge
+function updateCartBadge() {
+
+  // Find badge-elementet
+  // const cartBadge = document.querySelector('#cart-badge');
+  const cartBadge = document.getElementById('cart-badge');
+  if (!cartBadge) {
+    console.log('Element med id #cart-badge blev ikke fundet i DOM');
+    return;
+  }
+
+  // Hent kurv-data fra localStorage
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  console.log(cartItems);
+  
+
+  // Beregn det samlede antal produkter
+  const totalItems = cartItems.length;
+
+  // Opdater badge-indhold og synlighed
+  if (totalItems > 0) {
+    cartBadge.textContent = totalItems; // Sæt antallet af produkter
+    cartBadge.style.display = 'block'; // Vis badge
+  } else {
+    cartBadge.style.display = 'none'; // Skjul badge, hvis kurven er tom
+  }
+}
 // chatbot.js
 console.log(products);
 
@@ -112,6 +150,8 @@ function addToCart(productId) {
     localStorage.setItem("cart", JSON.stringify(cart));
     localStorage.setItem("uniqueIdCounter", uniqueIdCounter.toString());
 
+    updateCartBadge();
+
     return {
       status: "success",
       message: `${product.name} er tilføjet til din kurv.`,
@@ -153,8 +193,10 @@ function removeFromCart(uniqueIds) {
 
     // Opdater localStorage med den nye kurv
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-
     // Returnér succesbesked med fjernede produkter
+
+    updateCartBadge();
+
     if (removedProducts.length > 0) {
       return {
         status: "success",

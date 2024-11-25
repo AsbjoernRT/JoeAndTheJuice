@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/styles.css"> <!-- Tilføj en CSS-fil, hvis nødvendig -->
-  <title>Header</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Tilføj en CSS-fil, hvis nødvendig -->
+    <title>Header</title>
+  </head>
+  <body>
     <nav>
-        <a href="/" class="logo">
-          <img src="/assets/Joe billede.svg" alt="Joe and the Juice Logo">
-        </a>
+      <a href="/" class="logo">
+        <img src="/assets/Joe billede.svg" alt="Joe and the Juice Logo" />
+      </a>
 
-          <!-- Hamburger Icon -->
-    <button class="hamburger" aria-label="Toggle menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
-    <ul class="menu">
-      <li id="joeLogoMobile"> <a href="/" class="logo">
-        <img src="/assets/Joe billede.svg" alt="Joe and the Juice Logo">
-      </a></li>
+      <!-- Hamburger Icon -->
+      <button class="hamburger" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="menu">
+        <li id="joeLogoMobile">
+          <a href="/" class="logo">
+            <img src="/assets/Joe billede.svg" alt="Joe and the Juice Logo" />
+          </a>
+        </li>
         <li><a href="/menu">Menu</a></li>
         <li><a href="/contact">Contact</a></li>
         <li><a href="/order">Order</a></li>
         <li><a href="/login">Log in</a></li>
         <!-- <li><a href="/signup"><img src="../../assets/profile.png" alt="Profile Picture" id="profilePic"></a></li> -->
-        <li><a href="/checkout"><img src="../../assets/shopping cart.svg" alt="cart" id="cart"></a></li>
+        <!-- <li><a href="/checkout"><img src="../../assets/shopping cart.svg" alt="cart" id="cart"></a></li> -->
+        <li>
+          <a href="/checkout" style="position: relative">
+            <img src="../../assets/shopping cart.svg" alt="cart" id="cart" />
+            <div id="cart-badge">0</div>
+          </a>
+        </li>
       </ul>
-      
     </nav>
-</body>
+  </body>
+  <script src="/scripts/partials.helper.js"></script>
 </html>
