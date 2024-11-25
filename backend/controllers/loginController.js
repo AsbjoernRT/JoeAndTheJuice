@@ -1,8 +1,7 @@
-import index from '../app.js'
-import bcrypt from 'bcryptjs'
+const bcrypt = require('bcryptjs');
 
 // Funktion til at præsentere login-siden
-export const renderLogin = async (req, res) => {
+const renderLogin = async (req, res) => {
     console.log("Session details: ", req.session && req.session.loggedin);
     if (req.session.loggedin) {
         // Hvis brugeren er logget ind, omdirigeres de til hjemmesiden
@@ -16,7 +15,7 @@ export const renderLogin = async (req, res) => {
 }
 
 // Middleware til at sikre, at brugeren er godkendt
-export function authenticator(req, res, next) {
+function authenticator(req, res, next) {
     if (!req.session || !req.session.loggedin) {
        // Omdiriger til login-siden, hvis ikke logget ind
         res.redirect('/login');
@@ -27,7 +26,7 @@ export function authenticator(req, res, next) {
 }
 
 // Funktion til at udføre login-processen
-export const login = async (req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     console.log("Req.body received:", req.body);
 
@@ -58,7 +57,7 @@ export const login = async (req, res) => {
 };
 
 // Funktion til at validere loginoplysninger
-export const validateLogin = (logInUser, DBuser) => {
+const validateLogin = (logInUser, DBuser) => {
     // Hvis der ikke findes en bruger med den angivne e-mail, returneres en fejlmeddelelse
     if (!DBuser || DBuser.email !== logInUser.email) {
         return { valid: false, message: 'No user with that email' };
@@ -69,4 +68,11 @@ export const validateLogin = (logInUser, DBuser) => {
     }
 
     return { valid: true, user: DBuser };
+};
+
+module.exports = {
+    renderLogin,
+    authenticator,
+    login,
+    validateLogin
 };

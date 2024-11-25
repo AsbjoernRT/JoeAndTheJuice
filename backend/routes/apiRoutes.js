@@ -7,6 +7,17 @@ const express = require('express');
 const router = express.Router();
 const apiController = require('../controllers/apiController');
 const axios = require('axios');
+const database = require('../database/database');
+
+router.get('/products', async (req, res) => {
+  try {
+    const products = await database.getProducts();
+    res.json({ success: true, products });
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ success: false, message: 'Failed to fetch products' });
+  }
+});
 
 // Din OpenAI API-nøgle fra miljøvariabler
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;

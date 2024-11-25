@@ -1,18 +1,36 @@
-const sql = require("mssql");
-const { config } = require("./config.js"); // Henter din konfiguration
+// backend/database/database.js
+const sql = require('mssql');
+const config = require('./config'); // Stien er rettet til './config'
 
-const pool = new sql.ConnectionPool(config);
-
-const connectToDatabase = async () => {
-  try {
-    await pool.connect();
-    console.log("Database connection established");
-    return pool; // Returnerer pool-objektet til brug i forespørgsler
-  } catch (err) {
-    console.error("Database connection failed:", err.message);
-    throw err; // Stopper, hvis der opstår fejl
+class Database {
+  constructor() {
+    this.pool = null;
   }
-};
 
-module.exports = { connectToDatabase };
+  async connectToDatabase() {
+    try {
+      this.pool = await sql.connect(config);
+      console.log('Connected to the database');
+    } catch (err) {
+      console.error('Database connection failed:', err);
+      throw err;
+    }
+  }
 
+  async getProducts() {
+    try {
+      if (!this.pool) {
+        throw new Error('Database connection not established');
+      }
+      const result = await this.pool.request().query('SELECT * FROM products');
+      return result.recordset;
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
+      throw err;
+    }
+  }
+
+  // Tilføj flere databasefunktioner efter behov
+}
+
+module.exports = new Database();
