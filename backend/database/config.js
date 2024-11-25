@@ -1,19 +1,16 @@
-const dotenv = require("dotenv");
+// backend/database/config.js
+const dotenv = require('dotenv');
 dotenv.config();
 
-const server = process.env.AZURE_SQL_SERVER;
-const database = process.env.AZURE_SQL_DATABASE;
-const user = process.env.AZURE_SQL_USER;
-const password = process.env.AZURE_SQL_PASSWORD;
-
 const config = {
-    server,
-    database,
-    user,
-    password,
-    options: {
-        encrypt: true
-    }
+  user: process.env.AZURE_SQL_USER,
+  password: process.env.AZURE_SQL_PASSWORD,
+  server: process.env.AZURE_SQL_SERVER, // For eksempel 'localhost' eller serverens IP
+  database: process.env.AZURE_SQL_DATABASE,
+  options: {
+    encrypt: true, // Hvis du bruger Azure
+    trustServerCertificate: true, // Sæt til true, hvis du har certifikatproblemer
+  },
 };
 
-module.exports = { config };
+module.exports = config;
