@@ -8,7 +8,6 @@ const router = express.Router();
 const apiController = require('../controllers/apiController');
 const axios = require('axios');
 
-
 // Din OpenAI API-nøgle fra miljøvariabler
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
