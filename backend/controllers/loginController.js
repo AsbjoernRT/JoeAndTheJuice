@@ -33,7 +33,7 @@ export const login = async (req, res) => {
 
     try {
         // Hent brugeroplysninger fra databasen baseret på e-mail
-        const DBuser = await index.connectedDatabase.getUserByMail(email);
+        const DBuser = await server.connectedDatabase.getUserByMail(email);
         console.log(DBuser);
 
         const result = validateLogin({ email, password }, DBuser);
