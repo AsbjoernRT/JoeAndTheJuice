@@ -1,8 +1,46 @@
 // backend/routes/apiRoutes.js
 const express = require("express");
 const router = express.Router();
-const axios = require("axios");
-const database = require("../database/database");
+const apiController = require('../controllers/apiController');
+const axios = require('axios');
+const database = require('../database/database');
+const signupController = require('../controllers/signupController');
+const { register } = signupController;
+const sms = require('../controllers/sms');
+const { sendSMS } = sms;
+const loginController = require('../controllers/loginController');
+
+
+
+router.use(express.json());
+
+// Route til registrering af nye brugere
+router.post('/register', (req, res, next) => {
+  register(req, res, next); // Kalder register-funktionen fra signupController
+});
+
+router.post('/login', loginController.login); // Processér login-anmodningen
+
+
+router.post('/send', (req, res) => {
+  console.log(req.body);
+  
+  const { phoneNumber, status } = req.body;
+  sendSMS(phoneNumber, status);
+  res.status(200).json({ success: true, message: 'SMS sent' });
+});
+
+
+
+router.get('/products', async (req, res) => {
+  try {
+    const products = await database.getProducts();
+    res.json({ success: true, products });
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ success: false, message: 'Failed to fetch products' });
+  }
+});
 
 // Din OpenAI API-nøgle fra miljøvariabler
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
