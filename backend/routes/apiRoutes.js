@@ -8,6 +8,21 @@ const router = express.Router();
 const apiController = require('../controllers/apiController');
 const axios = require('axios');
 const database = require('../database/database');
+const signupController = require('../controllers/signupController');
+const { register } = signupController;
+const loginController = require('../controllers/loginController');
+
+
+router.use(express.json());
+
+// Route til registrering af nye brugere
+router.post('/register', (req, res, next) => {
+  register(req, res, next); // Kalder register-funktionen fra signupController
+  
+});
+
+router.post('/login', loginController.login); // Processér login-anmodningen
+
 
 router.get('/products', async (req, res) => {
   try {
