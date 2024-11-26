@@ -3,6 +3,7 @@ const { publicKey, privateKey } = require('./keysController'); // Importér dine
 
 // Funktion til kryptering med public key
 function encryptWithPublicKey(data) {
+
     return crypto.publicEncrypt(
         { key: publicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING },
         Buffer.from(data)

@@ -31,7 +31,20 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
         }
 
-        res.status(200).json({ success: true, message: 'Login successful', user: decryptedUser });
+        res.status(200).json({ 
+            success: true, 
+            message: 'Login successful', 
+            user: {
+                email: decryptWithPrivateKey(decryptedUser.userEmail),
+                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
+                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
+                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
+                country: decryptWithPrivateKey(decryptedUser.userCountry),
+                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
+                city: decryptWithPrivateKey(decryptedUser.userCity),
+                street: decryptWithPrivateKey(decryptedUser.userStreet),
+                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
+            } });
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ success: false, message: 'Internal server error' });
