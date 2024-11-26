@@ -1,53 +1,67 @@
-import index from '../app.js'
-import bcrypt from 'bcryptjs'
+const bcrypt = require('bcrypt');
+const database = require('../database/database');
+const { encryptWithPublicKey } = require('../controllers/encryptionUtils');
 
-// Funktion til at håndtere en bruger at registrere sug
-export const register = async (body, res) => {
-    console.log("Req.body modtaget:", body);
-    // Udpakker brugeroplysningerne fra request body'en
-    const { fullName, email, age, weight, gender, password } = body;
-    // Genererer en salt til brug for at hashe adgangskoden med bcrypt
-    const salt = await bcrypt.genSalt(10);
-     // Hasher adgangskoden med bcrypt
-    const hashedPassword = await bcrypt.hash(password, salt);
+// `register`-funktion
+register = async (req, res) => {
+    try {
+        console.log("Req.body modtaget:", req.body);
 
-    // Logger den indtastede email og den hasede adgangskode til konsollen
-    console.log("Login email: " + body.email, "Login password: " + hashedPassword);
+        const { firstName, lastName, email, password, phone, country, postNumber, city, street, houseNumber } = req.body;
 
-    // Tjekker om den indtastede email allerede findes i databasen
-    const DBemail = await index.connectedDatabase.getUserByMail(email);
-    console.log(DBemail);
-  
-    // Hvis emailen ikke findes i databasen, oprettes brugeren
-    if (DBemail == undefined) {
-        // Beregner brugerens basalstofskifte ud fra alder, køn og vægt
-        const cMetabolism = calculateMetabolism(age, gender, weight)
-       // Opretter et brugerobjekt med de indtastede oplysninger og det beregnede basalstofskifte
-        const user = {
-            fullName,
-            email,
-            age,
-            weight,
-            gender,
-            password: hashedPassword,
-            metabolism: cMetabolism
+        // Valider nødvendige felter
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({ success: false, message: 'Missing required fields' });
         }
-        // Gemmer brugeren i databasen
-        index.connectedDatabase.createUser(user)
-        // Omdirigerer brugeren til hjemmesiden med vellykket registrering
-        res.redirect('/?registration=success');
-    } else {
-        console.log("User exists");
-        // Redirect to the register route with a query parameter
-        // res.redirect('/register?error=userexists');
-        // res.redirect('register', {
-        //     error: 'Bruger eksisterer allerede, gå til login',
-        //     formData: {fullName, email, age, weight, gender } // Pass back the data
-        // });
-        
-        // Hvis emailen allerede eksisterer i databasen, omdirigeres brugeren tilbage til registreringssiden med en fejlmeddelelse
-        res.redirect(`/register?error=userexists&fullName=${encodeURIComponent(fullName)}&email=${encodeURIComponent(email)}&age=${age}&weight=${weight}&gender=${encodeURIComponent(gender)}`);
+
+        // Tjek om e-mail allerede findes i databasen
+        const existingUser = await database.getUserByEncryptedEmail(encryptWithPublicKey(email));
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User with this email already exists. Please use a different email.",
+            });
+        }
+
+        // Krypter følsomme data med public key
+        const encryptedFirstName = encryptWithPublicKey(firstName);
+        const encryptedLastName = encryptWithPublicKey(lastName);
+        const encryptedEmail = encryptWithPublicKey(email);
+        const encryptedPhone = encryptWithPublicKey(phone);
+        const encryptedCountry = encryptWithPublicKey(country);
+        const encryptedPostNumber = encryptWithPublicKey(postNumber);
+        const encryptedCity = encryptWithPublicKey(city);
+        const encryptedStreet = encryptWithPublicKey(street);
+        const encryptedHouseNumber = encryptWithPublicKey(houseNumber);
+
+        // Hash adgangskoden
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Opret bruger i databasen
+        const result = await database.createUser({
+            firstName: encryptedFirstName,
+            lastName: encryptedLastName,
+            email: encryptedEmail,
+            phone: encryptedPhone,
+            country: encryptedCountry,
+            postNumber: encryptedPostNumber,
+            city: encryptedCity,
+            street: encryptedStreet,
+            houseNumber: encryptedHouseNumber,
+            password: hashedPassword,
+        });
+
+        if (!result.success) {
+            console.error("Failed to create user in database.");
+            return res.status(500).json({ success: false, message: "Failed to create user in database." });
+        }
+
+        console.log("User successfully created:", email);
+        return res.status(201).json({ success: true, message: "User created successfully!" });
+    } catch (error) {
+        console.error("Error in register controller:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
+};
 
-
-}
+module.exports = { register };
