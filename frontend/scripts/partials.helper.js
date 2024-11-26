@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return response.text();
         })
         .then((html) => {
-          console.log('Header HTML fetched:', html);
+          // console.log('Header HTML fetched:', html);
           headerContainer.innerHTML = html; // Indsætter header HTML i containeren
   
           // Initialize hamburger menu functionality
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return response.text();
         })
         .then((html) => {
-          console.log('Footer HTML fetched:', html);
+          // console.log('Footer HTML fetched:', html);
           footerContainer.innerHTML = html; // Indsætter footer HTML i containeren
         })
         .catch((error) => {
