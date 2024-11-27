@@ -26,10 +26,37 @@ const login = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
+        // Dekrypter adgangskoden fra databasen
+        const decryptedPassword = decryptWithPrivateKey(decryptedUser.userPassword);
+
         // Valider adgangskoden
-        const passwordMatch = await bcrypt.compare(password, decryptedUser.userPassword);
-        if (!passwordMatch) {
+        if (decryptedPassword !== password) {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
+        }
+
+        console.log("User authenticated successfully.");
+        // Kontroller, om brugeren er masterbruger
+        const isMasterUser = decryptedUser.userEmail === process.env.MASTER_USER_EMAIL;
+
+        if (isMasterUser) {
+            console.log('Masterbruger logget ind - totrinsgodkendelse springes over.');
+
+            // Gem session direkte
+            req.session.loggedin = true;
+            req.session.user = {
+                userId: decryptedUser.userID,
+                email: decryptWithPrivateKey(decryptedUser.userEmail),
+                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
+                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
+                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
+                country: decryptWithPrivateKey(decryptedUser.userCountry),
+                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
+                city: decryptWithPrivateKey(decryptedUser.userCity),
+                street: decryptWithPrivateKey(decryptedUser.userStreet),
+                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
+            };
+
+            return res.status(200).json({ success: true, message: 'Login successful for master user.', user: req.session.user });
         }
 
         // Dekrypter brugerdata til session og respons
@@ -47,8 +74,7 @@ const login = async (req, res) => {
         };
 
         // Gem sessionen
-        req.session.loggedin = true;
-        req.session.user = userData;
+
         console.log("User logged in successfully:", userData.email);
 
         // Send verificeringskode via Twilio
@@ -61,6 +87,9 @@ const login = async (req, res) => {
         }
 
         // Returner succesrespons til klienten
+        req.session.loggedin = true;
+        req.session.user = userData;
+
         res.status(200).json({
             success: true,
             message: 'Login successful. Verification code sent.',

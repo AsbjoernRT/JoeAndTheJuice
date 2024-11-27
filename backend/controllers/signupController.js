@@ -40,9 +40,7 @@ register = async (req, res) => {
         const encryptedCity = encryptWithPublicKey(city);
         const encryptedStreet = encryptWithPublicKey(street);
         const encryptedHouseNumber = encryptWithPublicKey(houseNumber);
-
-        // Hash adgangskoden
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const encryptedPassword = encryptWithPublicKey(password); // Krypter adgangskoden
 
         // Opret bruger i databasen
         const result = await database.createUser({
@@ -55,7 +53,7 @@ register = async (req, res) => {
             city: encryptedCity,
             street: encryptedStreet,
             houseNumber: encryptedHouseNumber,
-            password: hashedPassword,
+            password: encryptedPassword, // Gem krypteret adgangskode
         });
 
         if (!result.success) {
