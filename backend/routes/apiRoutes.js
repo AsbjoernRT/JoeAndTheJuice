@@ -365,9 +365,9 @@ router.post("/chat", async (req, res) => {
 });
 
 router.get("/cart", (req, res) => {
-  const cart = req.session.cart || [];
+  console.log("Session cart:", req.session.cart);
 
-  // Beregn det samlede antal produkter baseret på deres mængde (quantity)
+  const cart = req.session.cart || []; // Fallback til tom array
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   res.json({
@@ -412,11 +412,11 @@ router.post("/order", async (req, res) => {
   console.log("Creating order...", req.body);
   try {
     const result = await database.createOrder(userID, storeID, products);
+    req.session.cart = []; // Ryd brugerens kurv
     res.json(result);
     console.log("Resultat", result);
-    // Slet brugerens kurv
-    req.session.cart = [];
-    req.session.cart.totalItems = 0;
+     // Log session efter ændring
+     console.log("Session efter rydning af kurv:", req.session);
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ success: false, message: "Failed to create order." });
