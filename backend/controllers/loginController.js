@@ -33,9 +33,8 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
         }
 
-         // Dekrypter brugerdata til returnering
-         const userData = {
-        console.log("Login successful"),
+        // Dekrypter brugerdata til returnering
+        console.log("Login successful");
         // Brugeren er godkendt
         console.log("User details: ", decryptedUser.userID);
         
@@ -52,6 +51,8 @@ const login = async (req, res) => {
             street: decryptWithPrivateKey(decryptedUser.userStreet),
             houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
         };
+
+        const userData = req.session.user;
 
            // Gem brugerens session og omdiriger til hjemmesiden ved succesfuldt login
            console.log("User found - login success");

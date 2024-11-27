@@ -12,7 +12,6 @@ const { sendVerificationCode, checkVerificationCode} = checkVerification;
 const sms = require('../controllers/sms');
 const { sendSMS } = sms;
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
-const loginController = require('../controllers/loginController');
 const session = require("express-session");
 
 
