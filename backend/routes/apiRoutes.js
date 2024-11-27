@@ -444,20 +444,61 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
 });
 
 router.post("/order", async (req, res) => {
-  const { userID, storeID, products } = req.body;
+  const { userID, storeID, storeName, products } = req.body;
   console.log("Creating order...", req.body);
   try {
     const result = await database.createOrder(userID, storeID, products);
     req.session.cart = []; // Ryd brugerens kurv
     res.json(result);
     console.log("Resultat", result);
-     // Log session efter ændring
-     console.log("Session efter rydning af kurv:", req.session);
+
+    let SMSphone = '+45' + req.session.user.phone;
+    let formattedProducts = await formatProductsForSMS(products, result.totalPrice);
+    console.log("Formatted products for SMS:", formattedProducts);
+    let formattedStoreName = storeName.trim();
+     // Only send SMS if we have formatted products
+    if (formattedProducts && formattedProducts.productList) {
+      let SMSphone = '+45' + req.session.user.phone;
+      await sendSMS(SMSphone, 'bekræftelse', result.orderID, formattedProducts, formattedStoreName);
+    }
+
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ success: false, message: "Failed to create order." });
   }
 });
+
+async function formatProductsForSMS(products, totalPrice) {
+  try {
+    // Get product details from database
+    const productsWithNames = await Promise.all(
+      products.map(async (product) => {
+        const productDetails = await database.getProductById(product.productID);
+        return {
+          ...product,
+          productName: productDetails.productName
+        };
+      })
+    );
+
+    const productLines = productsWithNames.map(product => 
+      `${product.quantity}x ${product.productName}`
+    );
+
+    const formattedProducts = {
+      productList: productLines.join(', '),
+      totalItems: products.reduce((sum, p) => sum + p.quantity, 0),
+      totalPrice: totalPrice
+    };
+    
+    console.log("Product lines:", productLines);
+    console.log("Formatted Products:", formattedProducts); // Debug her
+    return formattedProducts;
+  } catch (error) {
+    console.error('Error formatting products:', error);
+    throw error;
+  }
+}
 
 router.post("/stores", async (req, res) => {
   console.log("Finding stores...",req.body)
