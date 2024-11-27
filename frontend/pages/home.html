@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Joe and the Juice</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
 </head>
 <body>
   <!-- Sliding Navigation Menu -->
@@ -24,40 +26,12 @@
     </section>
   </div>
 
-  <section class="product-slider">
-    <h2 class="product-slider__title">Most popular products</h2>
-    <div class="product-slider__wrapper">
-      <!-- Product 1 -->
-      <div class="product-slider__item">
-        <img src="./assets/joe americano.jpg" alt="Americano" class="product-slider__image">
-        <h3 class="product-slider__name">AMERICANO</h3>
-        <button class="product-slider__button">ADD TO BASKET</button>
-      </div>
-      <!-- Product 2 -->
-      <div class="product-slider__item">
-        <img src="./assets/joe proteinshake.jpg" alt="Power Shake" class="product-slider__image">
-        <h3 class="product-slider__name">POWER SHAKE</h3>
-        <button class="product-slider__button">ADD TO BASKET</button>
-      </div>
-      <!-- Product 3 -->
-      <div class="product-slider__item">
-        <img src="./assets/joe avocado.jpg" alt="Avocado Sandwich" class="product-slider__image">
-        <h3 class="product-slider__name">AVOCADO SANDWICH</h3>
-        <button class="product-slider__button">ADD TO BASKET</button>
-      </div>
-      <!-- Product 4 -->
-      <div class="product-slider__item">
-        <img src="./assets/joe prince of green.jpg" alt="Prince of Green" class="product-slider__image">
-        <h3 class="product-slider__name">PRINCE OF GREEN</h3>
-        <button class="product-slider__button">ADD TO BASKET</button>
-      </div>
-    </div>
-    <!-- Arrows -->
-    <button class="product-slider__arrow product-slider__arrow--left">&lt;</button>
-    <button class="product-slider__arrow product-slider__arrow--right">&gt;</button>
-    <!-- Full Menu Button -->
-    <button class="product-slider__full-menu">FULL MENU</button>
-  </section>
+  
+
+    <section class="product-slider">
+      <h2 class="product-slider__title">Popular products</h2>
+      <div id="main-container"></div>
+    </section>
 
   <!-- Chatbot Trigger Button -->
 <button id="chatbot-toggle">
@@ -79,6 +53,8 @@
 </main>
   <div id="footer-container"></div>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
   <script src="/scripts/main.js"></script>
   <script src="/scripts/partials.helper.js"></script>
   <script src="/scripts/products.js"></script>

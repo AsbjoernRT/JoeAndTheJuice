@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
 
   console.log(`Current path: ${path}`); // Debug: Se stien i konsollen
-
+  displayProducts()
   if (path === "/checkout") {
     // Kald kun checkout-relaterede funktioner
     checkLoginStatus();
@@ -382,4 +382,41 @@ function selectItem(item) {
     storeStreet: item.storeStreet,
     storeHouseNumber: item.storeHouseNumber,
   });
+}
+
+async function addToCart(productID, productName, productPrice) {
+  try {
+    // Send produktdata til backend for at opdatere kurven
+    const response = await fetch('/api/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productID: productID,
+        productName: productName,
+        productPrice: productPrice,
+        quantity: 1, // Standard til 1
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      console.log('Cart updated in backend:', result.cart);
+
+      // Opdater sessionStorage med backendens seneste kurv
+      sessionStorage.setItem('cart', JSON.stringify(result.cart));
+
+      // Opdater badge for at vise det samlede antal varer
+      updateCartBadge();
+
+      // Feedback til brugeren
+      alert(`${productName} blev tilføjet til kurven!`);
+    } else {
+      console.error('Failed to add to cart:', result.message);
+      alert('Kunne ikke tilføje til kurven. Prøv igen.');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    alert('Der opstod en fejl. Prøv igen senere.');
+  }
 }
