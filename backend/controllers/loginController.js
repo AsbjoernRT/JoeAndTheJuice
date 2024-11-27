@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const { sendVerificationCode } = require('../controllers/authenticationController');
