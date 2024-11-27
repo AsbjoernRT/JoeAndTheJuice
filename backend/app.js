@@ -14,9 +14,8 @@ app.use(session({
     secret: 'joeandthechatbot',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false 
-  },
-  name: 'joeAndTheJuice.sid'  // Sæt til true, hvis du bruger HTTPS
+    cookie: { secure: false }, // Sæt til true, hvis du bruger HTTPS
+  name: 'joeAndTheJuice.sid'  
   }));
 
 app.use(express.urlencoded({ extended: true }));

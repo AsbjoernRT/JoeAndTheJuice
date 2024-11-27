@@ -32,7 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("Please select a store before proceeding.");
           return;
         }
-        console.log("Selected store:", storeID);
+
+        let storeName = sessionStorage.getItem("selectedName");
+        console.log("Selected store:", storeID, storeName);
 
         const cartData = JSON.parse(sessionStorage.getItem("cart"));
         console.log("Cart data:", cartData);
@@ -56,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = {
           userID,
           storeID,
+          storeName,
           products,
         };
 
@@ -368,6 +371,7 @@ function selectItem(item) {
   document.getElementById("searchResults").innerHTML = "";
 
   sessionStorage.setItem("selectedStore", JSON.stringify(item.storeID));
+  sessionStorage.setItem("selectedName", JSON.stringify(item.storeName));
 
   // Gemmer og returnerer data om det valgte element
   return (selectedItemData = {
