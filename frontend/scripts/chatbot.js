@@ -105,7 +105,7 @@ async function handleUserMessage(userMessage) {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/chat", {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -179,7 +179,7 @@ async function handleUserMessage(userMessage) {
 
 async function updateCartBadge() {
   try {
-    const response = await fetch("http://localhost:3000/api/cart");
+    const response = await fetch("/api/cart");
     const data = await response.json();
     console.log(data);
     
