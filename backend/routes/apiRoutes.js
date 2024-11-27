@@ -9,6 +9,7 @@ const { register } = signupController;
 const sms = require('../controllers/sms');
 const { sendSMS } = sms;
 const loginController = require('../controllers/loginController');
+const session = require("express-session");
 
 
 
@@ -21,6 +22,23 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', loginController.login); // Processér login-anmodningen
 
+router.get('/login_status', (req, res) => {
+  console.log(req.session);
+  
+  if (req.session.loggedin) { // Hvis brugeren er logget ind
+    res.json({ loggedIn: true });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+router.get('/user_data', (req, res) => {
+  if (req.session && req.session.user) {
+    res.json({ success: true, user: req.session.user });
+  } else {
+    res.json({ success: false, message: 'No user data available in session.' });
+  }
+});
 
 router.post('/send', (req, res) => {
   console.log(req.body);
@@ -390,15 +408,15 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
 });
 
 router.post("/order", async (req, res) => {
-  const { userID, storeID, productIDs } = req.body;
-
-  if (!userID || !storeID || !Array.isArray(productIDs) || productIDs.length === 0) {
-    return res.status(400).json({ success: false, message: "Invalid input data." });
-  }
-
+  const { userID, storeID, products } = req.body;
+  console.log("Creating order...", req.body);
   try {
-    const result = await database.createOrder(userID, storeID, productIDs);
+    const result = await database.createOrder(userID, storeID, products);
     res.json(result);
+    console.log("Resultat", result);
+    // Slet brugerens kurv
+    req.session.cart = [];
+    req.session.cart.totalItems = 0;
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ success: false, message: "Failed to create order." });

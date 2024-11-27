@@ -16,7 +16,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false 
   },
-  name: 'joeAndTheJuice.sid// Sæt til true, hvis du bruger HTTPS
+  name: 'joeAndTheJuice.sid'  // Sæt til true, hvis du bruger HTTPS
   }));
 
 app.use(express.urlencoded({ extended: true }));

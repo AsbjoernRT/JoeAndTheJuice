@@ -5,9 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (path === '/checkout') {
     // Kald kun checkout-relaterede funktioner
+    checkLoginStatus();
+    populateUserDetails();
     checkoutProducts();
     updateCartBadge();
     storeSearch();
+  };
+
+  if (path === '/login') {
+
+    updateCartBadge();
   };
 
     const menuToggle = document.getElementById('menu-toggle');
@@ -28,12 +35,109 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 500); // Forsinkelse på 1 sekund
 });
 
-document.getElementById("pay-now").addEventListener("click", async () => {
-  const response = await fetch("http://localhost:3000/api/cart");
-      const cart = await response.json();
-      console.log("Producter i kurven: ",cart);
-});
 
+async function populateUserDetails() {
+  try {
+    // Fetch user data from the server
+    const userData = await fetchUserData();
+    if (!userData) return;
+
+    // Populate the form with user data
+    populateFormFields(userData);
+
+    console.log("Form populated with user data from session storage.");
+  } catch (error) {
+    console.error("Error populating user details:", error);
+  }
+}
+
+// Fetch user data from the server and store in session storage
+async function fetchUserData() {
+  try {
+    const response = await fetch('/api/user_data');
+    const data = await response.json();
+
+    if (data.success && data.user) {
+      console.log("User data fetched:", data.user);
+      sessionStorage.setItem("userData", JSON.stringify(data.user));
+      return data.user;
+    } else {
+      console.warn("No user data found in session:", data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+  }
+}
+
+// Populate form fields with user data
+function populateFormFields(userData) {
+  if (!userData) {
+    console.log("No user data found in session storage.");
+    return;
+  }
+
+  const formFields = [
+    { id: "email", value: userData.email },
+    { id: "first-name", value: userData.firstName },
+    { id: "last-name", value: userData.lastName },
+    { id: "address", value: userData.street },
+    { id: "number", value: userData.houseNumber },
+    { id: "city", value: userData.city },
+    { id: "country", value: userData.country},
+    { id: "postal-code", value: userData.postNumber }
+  ];
+
+  formFields.forEach(({ id, value }) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.value = value || "";
+    } else {
+      console.warn(`Element with ID "${id}" not found.`);
+    }
+  });
+
+  const houseInput = document.querySelector('input[name="address"]:nth-of-type(2)');
+  if (houseInput) {
+    houseInput.value = userData.houseNumber || "";
+  }
+
+  const countrySelect = document.getElementById("country");
+  if (countrySelect) {
+    countrySelect.value = userData.country || "";
+  }
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.value = userData.selectedStore || "";
+  }
+}
+
+
+function checkLoginStatus(){
+  fetch('/api/login_status')
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Failed to check login status');
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log('Login status:', data);
+    if (data.loggedIn) {
+      // Brugeren er logget ind
+      console.log('Bruger er logget ind');
+    } else {
+      // Brugeren er ikke logget ind
+      console.log('Bruger er ikke logget ind');
+      window.location.href = '/login';
+    }
+  })
+  .catch((error) => {
+    console.error('Fejl ved tjek af login status:', error);
+  });
+}
 
   async function updateCartBadge() {
     try {
@@ -79,6 +183,7 @@ async function checkoutProducts() {
       }
   
       const cart = data.cart;
+      sessionStorage.setItem('cart', JSON.stringify(cart));
       let subtotal = 0;
   
       // Ryd containeren før opdatering
@@ -167,6 +272,8 @@ function selectItem(item) {
 
   document.getElementById('searchResults').innerHTML = '';
 
+  sessionStorage.setItem('selectedStore', JSON.stringify(item.storeID));
+
   // Gemmer og returnerer data om det valgte element
   return selectedItemData = {
       storeName: item.storeName,
@@ -177,3 +284,79 @@ function selectItem(item) {
       storeHouseNumber: item.storeHouseNumber
   };
 }
+
+document.getElementById("pay-now").addEventListener("click", async () => {
+  event.preventDefault(); // Forhindrer form submission
+  try {
+    // Fetch user data using fetchUserData
+    const userData = await fetchUserData();    
+    if (!userData || !userData.userId) {
+      alert("User is not logged in. Please log in to proceed.");
+      return;
+    }
+
+    const userID = userData.userId;
+    console.log("User ID:", userID);
+    
+    // Get selected store name from the input field
+    const storeID = parseInt(sessionStorage.getItem("selectedStore"), 10);
+    if (!storeID) {
+      alert("Please select a store before proceeding.");
+      return;
+    }
+    console.log("Selected store:", storeID);
+    
+    const cartData = JSON.parse(sessionStorage.getItem("cart"));
+    console.log("Cart data:", cartData);
+    
+    if (!cartData) {
+      alert("No products found in the cart. Please try again.");
+      return;
+    }
+    // Byg en liste over produkter med produkt-ID og mængde
+    const products = cartData.map(item => ({
+      productID: item.productID,
+      quantity: item.quantity
+    }));
+
+    if (products.length === 0) {
+      alert("No valid products found in the cart.");
+      return;
+    }
+
+    // Opret payload til backend
+    const payload = {
+      userID,
+      storeID,
+      products
+    };
+
+    console.log("Payload to send:", payload);
+    // Send the data to the backend
+    const response = await fetch("http://localhost:3000/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+    console.log("Order response:", result);
+    
+
+    // Handle backend response
+    if (result.success) {
+      alert(`Order placed successfully! Order ID: ${result.orderID}`);
+      // Clear the cart after a successful order
+
+      window.location.href = "/";
+    } else {
+      console.error("Failed to place order:", result.message);
+      alert("Failed to place the order. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error placing order:", error,result);
+    alert("An error occurred while placing the order. Please try again later.");
+  }
+});

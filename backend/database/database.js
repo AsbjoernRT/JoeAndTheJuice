@@ -319,6 +319,84 @@ async searchStores(searchTerm) {
   }
 }
 
+async createOrder(userID, storeID, productQuantities) {
+  await this.connectToDatabase();
+  const transaction = new sql.Transaction(this.pool);
+  
+  try {
+    await transaction.begin();
+    const request = new sql.Request(transaction);
+
+    // Get current UTC date and time
+    const now = new Date();
+    const orderDate = now.toISOString().split('T')[0];
+    const orderTimeString = now.toISOString();
+
+    console.log('Order date:', orderDate, 'order time:', orderTimeString);
+
+    // Combined query - calculate total and create order
+    const orderResult = await request
+      .input('userID', sql.Int, userID)
+      .input('storeID', sql.Int, storeID)
+      .input('orderDate', sql.Date, orderDate)
+      .input('orderTime', sql.NVarChar, orderTimeString)
+      .input('productQuantities', sql.VarChar, JSON.stringify(productQuantities))
+      .query(`
+        DECLARE @totalPrice INT;
+        DECLARE @CopenhagenTime AS datetimeoffset;
+        
+        -- Calculate total price
+        SELECT @totalPrice = SUM(p.productPrice * pq.quantity)
+        FROM OPENJSON(@productQuantities)
+        WITH (
+          productID INT,
+          quantity INT
+        ) pq
+        JOIN joeAndTheJuice.products p ON p.productID = pq.productID;
+
+        -- Set Copenhagen time
+        SET @CopenhagenTime = SWITCHOFFSET(CAST(@orderTime AS datetimeoffset), '+00:00');
+        
+        -- Create order and get ID
+        DECLARE @InsertedOrders TABLE (orderID INT);
+        INSERT INTO joeAndTheJuice.orders (userID, storeID, totalPrice, orderDate, orderTime)
+        OUTPUT INSERTED.orderID INTO @InsertedOrders
+        VALUES (@userID, @storeID, @totalPrice, @orderDate, @CopenhagenTime);
+
+        -- Insert order products
+        INSERT INTO joeAndTheJuice.orderProducts (orderID, productID, quantity)
+        SELECT (SELECT TOP 1 orderID FROM @InsertedOrders), pq.productID, pq.quantity
+        FROM OPENJSON(@productQuantities)
+        WITH (
+          productID INT,
+          quantity INT
+        ) pq;
+
+        -- Return order ID and total price
+        SELECT TOP 1 orderID, @totalPrice as totalPrice 
+        FROM @InsertedOrders;
+      `);
+
+    await transaction.commit();
+    
+    const result = orderResult.recordset[0];
+    if (!result || !result.orderID) {
+      throw new Error('Failed to create order.');
+    }
+
+    return { 
+      success: true, 
+      message: 'Order created successfully', 
+      orderID: result.orderID, 
+      totalPrice: result.totalPrice 
+    };
+
+  } catch (err) {
+    await transaction.rollback();
+    console.error('Error creating order:', err);
+    throw new Error('Database operation failed');
+  }
+}
 
 // Tilføj flere databasefunktioner efter behov
 }
