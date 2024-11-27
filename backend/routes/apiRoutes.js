@@ -525,4 +525,50 @@ router.get('/store_search', async (req, res) => {
   }
 })
 
+router.get('/allProducts', async (req, res) => {
+  try {
+    const products = await database.getProductsWithIngredients();
+    res.json(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ success: false, message: 'Failed to fetch products' });
+  }
+});
+
+router.post('/cart/add', (req, res) => {
+  try {
+    // Initialiser kurven, hvis den ikke allerede eksisterer
+    if (!req.session.cart) {
+      req.session.cart = [];
+    }
+
+    const { productID, productName, productPrice, quantity } = req.body;
+
+    // Find produktet i kurven
+    const existingProduct = req.session.cart.find(item => item.productID === productID);
+
+    if (existingProduct) {
+      // Hvis produktet allerede er i kurven, øg mængden
+      existingProduct.quantity += quantity;
+    } else {
+      // Tilføj nyt produkt til kurven
+      req.session.cart.push({
+        productID,
+        productName,
+        productPrice,
+        quantity,
+      });
+    }
+
+    console.log('Updated cart:', req.session.cart);
+
+    // Send opdateret kurv tilbage til klienten
+    res.json({ success: true, cart: req.session.cart });
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    res.status(500).json({ success: false, message: 'Failed to add to cart.' });
+  }
+});
+
+
 module.exports = router;

@@ -35,30 +35,11 @@ const login = async (req, res) => {
 
         console.log("User authenticated successfully.");
         // Kontroller, om brugeren er masterbruger
-        const isMasterUser = decryptedUser.userEmail === process.env.MASTER_USER_EMAIL;
+        const isMasterUser = decryptWithPrivateKey(decryptedUser.userEmail) === process.env.MASTER_USER_EMAIL;
+ 
+        console.log("Is master user:", isMasterUser);
 
-        if (isMasterUser) {
-            console.log('Masterbruger logget ind - totrinsgodkendelse springes over.');
-
-            // Gem session direkte
-            req.session.loggedin = true;
-            req.session.user = {
-                userId: decryptedUser.userID,
-                email: decryptWithPrivateKey(decryptedUser.userEmail),
-                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
-                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
-                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
-                country: decryptWithPrivateKey(decryptedUser.userCountry),
-                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
-                city: decryptWithPrivateKey(decryptedUser.userCity),
-                street: decryptWithPrivateKey(decryptedUser.userStreet),
-                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
-            };
-
-            return res.status(200).json({ success: true, message: 'Login successful for master user.', user: req.session.user });
-        }
-
-        // Dekrypter brugerdata til session og respons
+        // Opret brugerdataobjekt
         const userData = {
             userId: decryptedUser.userID,
             email: decryptWithPrivateKey(decryptedUser.userEmail),
@@ -72,7 +53,14 @@ const login = async (req, res) => {
             houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
         };
 
-        // Gem sessionen
+        if (isMasterUser) {
+            console.log('Masterbruger logget ind - totrinsgodkendelse springes over.');
+
+            // Gem session direkte
+            req.session.loggedin = true;
+            req.session.user = userData;
+            return res.status(200).json({ success: true, message: 'Login successful for master user.', user: req.session.user });
+        }
 
         console.log("User logged in successfully:", userData.email);
 

@@ -3,6 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
   }
   
   /* Sidebar Navigation */
@@ -34,6 +35,141 @@ body, html {
     margin-left: 0;
     transition: margin-left 0.3s;
   }
+
+  .product-carousel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    background-color: #333; /* Lyserød baggrund */
+    border-radius: 8px;
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Lettere og mere defineret skygge */
+}
+
+.product-card {
+    margin: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtil skygge */
+    background: #444; /* Hvid baggrund for kontrast */
+    text-align: center;
+    width: 200px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-10px); /* Løfter kortet ved hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Fremhævet skygge */
+}
+
+/* Styling for knapper */
+button,
+.product-card button,
+.checkout-button {
+    background-color: #f6c1d9; /* Lyserød baggrund */
+    color: #fff; /* Hvid tekstfarve */
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover,
+.product-card button:hover,
+.checkout-button:hover {
+    background-color: #e6a8b7; /* Mørkere lyserød ved hover */
+    transform: scale(1.05); /* Let forstørrelse ved hover */
+}
+
+/* Fokus-styling */
+button:focus,
+.product-card button:focus,
+.checkout-button:focus {
+    outline: 2px solid #e6a8b7; /* Fokusramme i mørkere lyserød */
+    box-shadow: 0 0 10px rgba(230, 168, 183, 0.5); /* Subtil glød ved fokus */
+}
+
+/* Aktiv tilstand */
+button:active,
+.product-card button:active,
+.checkout-button:active {
+    background-color: #d494aa; /* Endnu mørkere lyserød ved klik */
+    transform: scale(0.95); /* Let krympning ved klik */
+}
+
+/* Produktbillede */
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Produktnavn */
+.product-card h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #fff; /* Neutral mørk tekstfarve */
+}
+
+/* Pris */
+.product-card .price {
+    color: #ffff; /* Grøn farve for pris */
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+/* Slick Carousel Arrows */
+.slick-prev, .slick-next {
+    background: #f6c1d9; /* Lyserød pil baggrund */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.slick-prev:hover, .slick-next:hover {
+    background: #e6a8b7; /* Mørkere lyserød ved hover */
+}
+
+.slick-prev:before, .slick-next:before {
+    font-size: 20px;
+    color: #fff;
+}
+
+/* Paginering dots */
+.slick-dots li button:before {
+    font-size: 12px;
+    color: #f6c1d9; /* Lyserød */
+}
+
+.slick-dots li.slick-active button:before {
+    color: #e6a8b7; /* Mørkere lyserød */
+}
+
+/* Responsiv design */
+@media (max-width: 768px) {
+    .product-card {
+        width: 100%; /* Fuld bredde på små skærme */
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 90%; /* Lidt mindre end fuld bredde */
+    }
+}
   
   #content header {
     background: #f4f4f4;
