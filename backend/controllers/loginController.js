@@ -11,7 +11,6 @@ const login = async (req, res) => {
     try {
         // Hent alle brugere fra databasen
         const users = await database.getAllUsers();
-
         let decryptedUser = null;
 
         // Find brugeren baseret på dekrypteret e-mail
@@ -33,14 +32,8 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
         }
 
-         // Dekrypter brugerdata til returnering
-         const userData = {
-        console.log("Login successful"),
-        // Brugeren er godkendt
-        console.log("User details: ", decryptedUser.userID);
-        
-        req.session.loggedin = true;
-        req.session.user = {
+        // Dekrypter brugerdata til session og respons
+        const userData = {
             userId: decryptedUser.userID,
             email: decryptWithPrivateKey(decryptedUser.userEmail),
             firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
@@ -53,84 +46,32 @@ const login = async (req, res) => {
             houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
         };
 
-           // Gem brugerens session og omdiriger til hjemmesiden ved succesfuldt login
-           console.log("User found - login success");
-           req.session.loggedin = true;
-           console.log("session saved:", req.session.loggedin)
+        // Gem sessionen
+        req.session.loggedin = true;
+        req.session.user = userData;
 
-           res.status(200).json({
-            success: true,
-            message: 'Login successful',
-            user: userData,
-        });
+        console.log("User logged in successfully:", userData.email);
 
-        // Efterfølgende: Send verificeringskode via Twilio
-        const phoneNumber = decryptWithPrivateKey(decryptedUser.userTelephone);
-        const verificationResponse = await sendVerificationCode('+45' + phoneNumber);
-
-       
+        // Send verificeringskode via Twilio
+        const phoneNumber = '+45' + userData.phone; // Sikrer, at nummeret altid starter med +45
+        const verificationResponse = await sendVerificationCode(phoneNumber);
 
         if (!verificationResponse.success) {
             console.error('Failed to send verification code after login:', verificationResponse.message);
-        } else {
-            console.log('Verification code sent successfully.');
+            return res.status(500).json({ success: false, message: 'Failed to send verification code.' });
         }
-            houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
-        }
-        
-        res.status(200).json({ 
-            success: true, 
-            message: 'Login successful', 
 
-            
-            user: {
-                email: decryptWithPrivateKey(decryptedUser.userEmail),
-                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
-                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
-                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
-                country: decryptWithPrivateKey(decryptedUser.userCountry),
-                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
-                city: decryptWithPrivateKey(decryptedUser.userCity),
-                street: decryptWithPrivateKey(decryptedUser.userStreet),
-                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
-            } 
+        // Returner succesrespons til klienten
+        res.status(200).json({
+            success: true,
+            message: 'Login successful. Verification code sent.',
+            user: userData,
         });
+
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 };
 
-
-// Funktion til at præsentere login-siden
-const renderLogin = async (req, res) => {
-    console.log("Session details: ", req.session && req.session.loggedin);
-    if (req.session.loggedin) {
-        // Hvis brugeren er logget ind, omdirigeres de til hjemmesiden
-        console.log("login Success");
-        res.redirect('../');
-    } else {
-        // Hvis brugeren ikke er logget ind, vises login-siden.
-        console.log("not logged in");
-        res.sendFile('login.html', { root: './views' });
-    }
-}
-
-
-// Middleware til at sikre, at brugeren er godkendt
-function authenticator(req, res, next) {
-    if (!req.session || !req.session.loggedin) {
-       // Omdiriger til login-siden, hvis ikke logget ind
-        res.redirect('/login');
-    } else {
-        // Fortsæt til næste middleware eller rutehåndterer, hvis logget ind
-        next();
-    }
-}
-
-
-module.exports = {
-    renderLogin,
-    authenticator,
-    login,
-};
+module.exports = { login };

@@ -6,13 +6,13 @@ const axios = require('axios');
 const database = require('../database/database');
 const signupController = require('../controllers/signupController');
 const loginController = require('../controllers/loginController');
+const { login } = loginController;
 const { register } = signupController;
 const checkVerification = require('../controllers/authenticationController');
 const { sendVerificationCode, checkVerificationCode} = checkVerification;
 const sms = require('../controllers/sms');
 const { sendSMS } = sms;
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
-const loginController = require('../controllers/loginController');
 const session = require("express-session");
 
 
