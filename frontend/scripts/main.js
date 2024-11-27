@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Payload to send:", payload);
         // Send the data to the backend
-        const response = await fetch("http://localhost:3000/api/order", {
+        const response = await fetch("/api/order", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -232,7 +232,7 @@ function checkLoginStatus() {
 
 async function updateCartBadge() {
   try {
-    const response = await fetch("http://localhost:3000/api/cart");
+    const response = await fetch("/api/cart");
     const data = await response.json();
     console.log(data);
 
@@ -261,7 +261,7 @@ async function checkoutProducts() {
 
   try {
     // Hent kurv fra backend via session storage
-    const response = await fetch("http://localhost:3000/api/cart");
+    const response = await fetch("/api/cart");
     const data = await response.json();
 
     if (!data.success || !data.cart || data.cart.length === 0) {
