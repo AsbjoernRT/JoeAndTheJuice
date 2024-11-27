@@ -994,3 +994,22 @@ footer {
     animation: fadeInUp 0.3s ease;
     /* display: none; */
   }
+
+  .checkout-button {
+    display: block;
+    margin: 0 auto;
+    background-color: #f6c1d9;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .checkout-button:hover {
+    /* background-color: #0056b3; Mørkere nuance ved hover */
+    transform: scale(1.2); /* Forstør ved hover */
+    transition: transform 0.3s ease;
+  }
+

@@ -10,19 +10,16 @@ const session = require('express-session');
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(express.urlencoded({ extended: true }));
-// Configure Express to serve static files from the 'assets' directory
 app.use(session({
-  secret: 'keyboardcat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,  // Set to true in production
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000  // 7 days in milliseconds
+    secret: 'joeandthechatbot',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false 
   },
-  name: 'joeAndTheJuice.sid'
-}));
+  name: 'joeAndTheJuice.sid'  // Sæt til true, hvis du bruger HTTPS
+  }));
+
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '..', 'frontend')));

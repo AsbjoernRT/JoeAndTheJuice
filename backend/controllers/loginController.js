@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const { sendVerificationCode } = require('../controllers/authenticationController');
-
+const { user } = require('../database/config');
 
 // Login-funktion
 const login = async (req, res) => {
@@ -35,6 +35,13 @@ const login = async (req, res) => {
 
          // Dekrypter brugerdata til returnering
          const userData = {
+        console.log("Login successful"),
+        // Brugeren er godkendt
+        console.log("User details: ", decryptedUser.userID);
+        
+        req.session.loggedin = true;
+        req.session.user = {
+            userId: decryptedUser.userID,
             email: decryptWithPrivateKey(decryptedUser.userEmail),
             firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
             lastName: decryptWithPrivateKey(decryptedUser.userLastName),
@@ -68,6 +75,26 @@ const login = async (req, res) => {
         } else {
             console.log('Verification code sent successfully.');
         }
+            houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
+        }
+        
+        res.status(200).json({ 
+            success: true, 
+            message: 'Login successful', 
+
+            
+            user: {
+                email: decryptWithPrivateKey(decryptedUser.userEmail),
+                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
+                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
+                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
+                country: decryptWithPrivateKey(decryptedUser.userCountry),
+                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
+                city: decryptWithPrivateKey(decryptedUser.userCity),
+                street: decryptWithPrivateKey(decryptedUser.userStreet),
+                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
+            } 
+        });
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ success: false, message: 'Internal server error' });
