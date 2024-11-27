@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
+const { sendVerificationCode } = require('../controllers/authenticationController');
+
 
 // Login-funktion
 const login = async (req, res) => {
@@ -31,20 +33,41 @@ const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Login successful', 
-            user: {
-                email: decryptWithPrivateKey(decryptedUser.userEmail),
-                firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
-                lastName: decryptWithPrivateKey(decryptedUser.userLastName),
-                phone: decryptWithPrivateKey(decryptedUser.userTelephone),
-                country: decryptWithPrivateKey(decryptedUser.userCountry),
-                postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
-                city: decryptWithPrivateKey(decryptedUser.userCity),
-                street: decryptWithPrivateKey(decryptedUser.userStreet),
-                houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
-            } });
+         // Dekrypter brugerdata til returnering
+         const userData = {
+            email: decryptWithPrivateKey(decryptedUser.userEmail),
+            firstName: decryptWithPrivateKey(decryptedUser.userFirstName),
+            lastName: decryptWithPrivateKey(decryptedUser.userLastName),
+            phone: decryptWithPrivateKey(decryptedUser.userTelephone),
+            country: decryptWithPrivateKey(decryptedUser.userCountry),
+            postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
+            city: decryptWithPrivateKey(decryptedUser.userCity),
+            street: decryptWithPrivateKey(decryptedUser.userStreet),
+            houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
+        };
+
+           // Gem brugerens session og omdiriger til hjemmesiden ved succesfuldt login
+           console.log("User found - login success");
+           req.session.loggedin = true;
+           console.log("session saved:", req.session.loggedin)
+
+           res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            user: userData,
+        });
+
+        // Efterfølgende: Send verificeringskode via Twilio
+        const phoneNumber = decryptWithPrivateKey(decryptedUser.userTelephone);
+        const verificationResponse = await sendVerificationCode('+45' + phoneNumber);
+
+       
+
+        if (!verificationResponse.success) {
+            console.error('Failed to send verification code after login:', verificationResponse.message);
+        } else {
+            console.log('Verification code sent successfully.');
+        }
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ success: false, message: 'Internal server error' });

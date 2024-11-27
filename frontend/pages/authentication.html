@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Reuse header -->
+  <div id="partial-container"></div>
+
+  <main>
+    <!-- Login Section -->
+    <section class="login-container">
+      <h1 class="login-title">Welcome to Joe & The Juice</h1>
+      <p class="login-subtitle">Log in to your account</p>
+
+      <!-- Login Form -->
+      <form class="verification-form">
+        <div class="form-group">
+          <label for="authentiacation">Put in your sms code</label>
+          <input type="number" id="authentiacation" name="authentiacation" placeholder="Enter your sms code" required>
+        </div>
+
+        <button type="submit" class="button login-button">Log In</button>
+      </form>
+
+    </section>
+  </main>
+
+  <!-- Reuse footer -->
+  <div id="footer-container"></div>
+
+  <script src="/scripts/partials.helper.js"></script>
+  <script src="/scripts/authentication.js"></script>
+</body>
+</html>

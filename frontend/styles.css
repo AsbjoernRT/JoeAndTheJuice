@@ -732,6 +732,7 @@ footer {
   text-align: left; /* Align labels and inputs to the left */
 }
 
+
 .login-form label {
   display: block;
   margin-bottom: 5px;
@@ -741,6 +742,27 @@ footer {
 }
 
 .login-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.verification-form  {
+  margin-bottom: 20px;
+  text-align: center; /* Align labels and inputs to the left */
+}
+
+.verification-form label {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+}
+
+.verification-form input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
