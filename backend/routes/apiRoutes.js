@@ -5,9 +5,13 @@ const apiController = require('../controllers/apiController');
 const axios = require('axios');
 const database = require('../database/database');
 const signupController = require('../controllers/signupController');
+const loginController = require('../controllers/loginController');
 const { register } = signupController;
+const checkVerification = require('../controllers/authenticationController');
+const { sendVerificationCode, checkVerificationCode} = checkVerification;
 const sms = require('../controllers/sms');
 const { sendSMS } = sms;
+const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const loginController = require('../controllers/loginController');
 const session = require("express-session");
 
@@ -47,6 +51,38 @@ router.post('/send', (req, res) => {
   sendSMS(phoneNumber, status);
   res.status(200).json({ success: true, message: 'SMS sent' });
 });
+
+//Bruges til at sende en verificerings kode til en bruger der er ved at logge ind
+
+router.post('/sendVerificationCode', (req, res) => {
+  console.log(req.body);
+  const { phoneNumber, code } = req.body;
+  checkVerificationCode(phoneNumber, code)
+  .then((verificationResult) => {
+    if (verificationResult.success) {
+      res.status(200).json({ success: true, message: verificationResult.message });
+    } else {
+      res.status(401).json({ success: false, message: verificationResult.message });
+    }
+  })
+  .catch((error) => {
+    console.error('Fejl i verificerings-endpoint:', error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
+  });
+});
+
+//Bruges til at sende en verificerings kode til en bruger der er ved at oprette sig
+
+router.post('/sendVerificationCodeSignUp', (req, res) => {
+  console.log(req.body);
+  const { phoneNumber, code } = req.body;
+  phoneNumberDecrypted = decryptWithPrivateKey(phoneNumber);
+  console.log("Dekrypteret telefonnummer:",  phoneNumberDecrypted);
+  
+  sendVerificationCode(phoneNumberDecrypted);
+  res.status(200).json({ success: true, message: 'SMS sent' });
+});
+  
 
 
 

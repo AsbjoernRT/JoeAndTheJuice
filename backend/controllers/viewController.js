@@ -36,3 +36,7 @@ exports.getCheckoutPage = (req, res) => {
   exports.getSignup = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/signup.html'));
   };
+
+  exports.getAuthentication = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/authentication.html'));
+  };
