@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
+const { sendVerificationCode } = require('../controllers/authenticationController');
 const { user } = require('../database/config');
 
 // Login-funktion
@@ -31,6 +32,9 @@ const login = async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ success: false, message: 'Wrong password.' });
         }
+
+         // Dekrypter brugerdata til returnering
+         const userData = {
         console.log("Login successful"),
         // Brugeren er godkendt
         console.log("User details: ", decryptedUser.userID);
@@ -46,6 +50,31 @@ const login = async (req, res) => {
             postNumber: decryptWithPrivateKey(decryptedUser.userPostNumber),
             city: decryptWithPrivateKey(decryptedUser.userCity),
             street: decryptWithPrivateKey(decryptedUser.userStreet),
+            houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber),
+        };
+
+           // Gem brugerens session og omdiriger til hjemmesiden ved succesfuldt login
+           console.log("User found - login success");
+           req.session.loggedin = true;
+           console.log("session saved:", req.session.loggedin)
+
+           res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            user: userData,
+        });
+
+        // Efterfølgende: Send verificeringskode via Twilio
+        const phoneNumber = decryptWithPrivateKey(decryptedUser.userTelephone);
+        const verificationResponse = await sendVerificationCode('+45' + phoneNumber);
+
+       
+
+        if (!verificationResponse.success) {
+            console.error('Failed to send verification code after login:', verificationResponse.message);
+        } else {
+            console.log('Verification code sent successfully.');
+        }
             houseNumber: decryptWithPrivateKey(decryptedUser.userHouseNumber)
         }
         

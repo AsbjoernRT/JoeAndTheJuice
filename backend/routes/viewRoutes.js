@@ -14,5 +14,6 @@ router.get('/header', viewController.getHeader);
 router.get('/footer', viewController.getFooter);
 router.get('/login', viewController.getLogin);
 router.get('/signup', viewController.getSignup);
+router.get('/authentication', viewController.getAuthentication);
 
 module.exports = router;
