@@ -6,6 +6,7 @@ const axios = require('axios');
 const database = require('../database/database');
 const signupController = require('../controllers/signupController');
 const loginController = require('../controllers/loginController');
+const { login } = loginController;
 const { register } = signupController;
 const checkVerification = require('../controllers/authenticationController');
 const { sendVerificationCode, checkVerificationCode} = checkVerification;
