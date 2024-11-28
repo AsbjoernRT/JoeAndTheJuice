@@ -1149,3 +1149,14 @@ footer {
     transition: transform 0.3s ease;
   }
 
+  .message.chatbot .message-content {
+    border-left: 3px solid #2196f3;
+    animation: cursor .6s infinite;
+  }
+  
+  @keyframes cursor {
+    0% { border-left-color: transparent }
+    50% { border-left-color: #2196f3 }
+    100% { border-left-color: transparent }
+  }
+

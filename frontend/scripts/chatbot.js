@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   // Delay opdatering af badge
   setTimeout(() => {
@@ -56,14 +55,21 @@ function appendMessage(sender, message, options = {}) {
     botIcon.alt = "Chatbot";
     botIcon.classList.add("chatbot-icon");
 
-    senderElement.appendChild(botIcon);
+    senderElement.appendChild(botIcon); // Add the icon to senderElement
+    messageElement.appendChild(senderElement);
+    messageElement.appendChild(messageContent);
+    typeWriter(message, messageContent);
+    // senderElement.appendChild(botIcon);
   } else {
     messageElement.classList.add("user");
+    messageContent.textContent = message;
+    messageElement.appendChild(senderElement);
+    messageElement.appendChild(messageContent);
   }
 
   // Saml beskedelementet
-  messageElement.appendChild(senderElement);
-  messageElement.appendChild(messageContent);
+  // messageElement.appendChild(senderElement);
+  // messageElement.appendChild(messageContent);
 
   // Håndter eventuelle ekstra muligheder (f.eks. knapper)
   if (options.showCheckoutButton) {
@@ -86,7 +92,6 @@ function appendMessage(sender, message, options = {}) {
 let conversationHistory = [];
 
 let uniqueIdCounter = 0;
-
 
 async function handleUserMessage(userMessage) {
   // Tilføj system-besked, hvis det er første besked
@@ -131,7 +136,10 @@ async function handleUserMessage(userMessage) {
       });
 
       console.log("Function Name:", assistantMessage.function_call.name);
-      console.log("Function Arguments:", assistantMessage.function_call.arguments);
+      console.log(
+        "Function Arguments:",
+        assistantMessage.function_call.arguments
+      );
 
       // Hvis funktionen er 'checkout', sæt flaget
       if (assistantMessage.function_call.name === "checkout") {
@@ -144,31 +152,33 @@ async function handleUserMessage(userMessage) {
       // Tilføj assistentens svar til historikken
       // conversationHistory.push(assistantMessage);
       // Tilføj assistentens svar til historikken
-    conversationHistory.push({
-    role: "assistant",
-    content: assistantMessage.content || "",
+      conversationHistory.push({
+        role: "assistant",
+        content: assistantMessage.content || "",
       });
       // Vis assistentens svar i chatvinduet
       if (assistantMessage.content) {
         // Tjek for nøgleord i assistentens svar
-    const lowerCaseContent = assistantMessage.content.toLowerCase();
-    if (
-      lowerCaseContent.includes("checkout-knappen") ||
-      lowerCaseContent.includes("gå til checkout") ||
-      lowerCaseContent.includes("klar til at betale")
-    ) {
-      showCheckoutButton = true;
+        const lowerCaseContent = assistantMessage.content.toLowerCase();
+        if (
+          lowerCaseContent.includes("checkout-knappen") ||
+          lowerCaseContent.includes("gå til checkout") ||
+          lowerCaseContent.includes("klar til at betale")
+        ) {
+          showCheckoutButton = true;
+        }
+
+        appendMessage("Chatbot", assistantMessage.content, {
+          showCheckoutButton,
+        });
+
+        // Nulstil flaget
+        showCheckoutButton = false;
+      }
+
+      // Opdater kurven
+      updateCartBadge();
     }
-
-    appendMessage("Chatbot", assistantMessage.content, { showCheckoutButton });
-
-    // Nulstil flaget
-    showCheckoutButton = false;
-  }
-
-  // Opdater kurven
-  updateCartBadge();
-}
   } catch (error) {
     console.error("Error:", error);
     appendMessage("Chatbot", "Der opstod en fejl. Prøv venligst igen senere.");
@@ -182,7 +192,7 @@ async function updateCartBadge() {
     const response = await fetch("/api/cart");
     const data = await response.json();
     console.log(data);
-    
+
     if (data.success) {
       const cartBadge = document.getElementById("cart-badge");
       const totalItems = data.totalItems;
@@ -199,4 +209,20 @@ async function updateCartBadge() {
   } catch (error) {
     console.error("Fejl ved opdatering af kurvbadge:", error);
   }
+}
+
+// Add this new function
+function typeWriter(text, element, speed = 50) {
+  let i = 0;
+  element.textContent = "";
+
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    }
+  }
+
+  type();
 }

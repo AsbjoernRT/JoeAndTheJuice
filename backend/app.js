@@ -6,6 +6,8 @@ const cors = require('cors');
 const app = express();
 const session = require('express-session');
 const jwt = require('jsonwebtoken');
+const RedisStore = require('connect-redis').default;
+const redis = require('redis');
 
 
 // Middleware
@@ -37,6 +39,35 @@ app.use((req, res, next) => {
   next();
 });
 
+// Create Redis client
+const redisClient = redis.createClient({
+  host: '127.0.0.1',
+  port: 6379,
+});
+
+// Connect to Redis
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log('Redis client successfully connected.');
+  } catch (err) {
+    console.error('Failed to connect to Redis:', err);
+    process.exit(1); // Exit if Redis connection fails
+  }
+})();
+
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: 'joeandthechatbot',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+    },
+  })
+);
 
 app.use(express.urlencoded({ extended: true }));
 
