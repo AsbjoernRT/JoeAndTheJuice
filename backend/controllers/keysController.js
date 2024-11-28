@@ -1,8 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+const crypto = require('crypto');
 
-// Læs public og private key fra filer
-const publicKey = fs.readFileSync(path.join(__dirname, '../keys/public.pem'), 'utf-8');
-const privateKey = fs.readFileSync(path.join(__dirname, '../keys/private.pem'), 'utf-8');
+const publicKey = Buffer.from(process.env.PUBLIC_KEY_BASE64, 'base64').toString('utf-8');
+const privateKey = Buffer.from(process.env.PRIVATE_KEY_BASE64, 'base64').toString('utf-8');
 
 module.exports = { publicKey, privateKey };
