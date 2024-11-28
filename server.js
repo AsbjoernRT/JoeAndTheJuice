@@ -39,7 +39,8 @@ if (cluster.isMaster) {
       app.use("/", viewRoutes);
 
       // Start the server
-      const PORT = process.env.PORT || 3000;
+      // const PORT = process.env.PORT || 3000;
+      const PORT = process.env.PORT || (3000 + cluster.worker.id);
       app.listen(PORT, () => {
         console.log(`Worker ${process.pid} is listening on port ${PORT}`);
       });
