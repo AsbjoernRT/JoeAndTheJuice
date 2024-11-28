@@ -5,18 +5,38 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const session = require('express-session');
+const RedisStore = require('connect-redis').default;
+const redis = require('redis');
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(session({
-    secret: 'joeandthechatbot',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }, // Sæt til true, hvis du bruger HTTPS
-  name: 'joeAndTheJuice.sid'  
-  }));
+const redisClient = redis.createClient({
+    host: '127.0.0.1',
+    port: 6379,
+  });
+  
+  app.use(
+    session({
+      store: new RedisStore({ client: redisClient }),
+      secret: 'joeandthechatbot',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        secure: false, // True hvis du bruger HTTPS
+        httpOnly: true,
+      },
+    })
+  );
+
+// app.use(session({
+//     secret: 'joeandthechatbot',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: false }, // Sæt til true, hvis du bruger HTTPS
+//   name: 'joeAndTheJuice.sid'  
+//   }));
 
 app.use(express.urlencoded({ extended: true }));
 
