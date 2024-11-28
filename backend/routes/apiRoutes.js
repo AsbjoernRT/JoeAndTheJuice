@@ -14,10 +14,16 @@ const sms = require('../controllers/sms');
 const { sendSMS } = sms;
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const session = require("express-session");
-
-
-
+const { authenticateToken } = require('../controllers/jwtToken');
 router.use(express.json());
+
+router.get('/test-token', (req, res) => {
+  if (req.session.token) {
+    res.json({ success: true, token: req.session.token });
+  } else {
+    res.status(401).json({ success: false, message: 'No token found in session' });
+  }
+});
 
 // Route til registrering af nye brugere
 router.post('/register', (req, res, next) => {
@@ -36,7 +42,7 @@ router.get('/login_status', (req, res) => {
   }
 });
 
-router.get('/user_data', (req, res) => {
+router.get('/user_data', authenticateToken, (req, res) => {
   if (req.session && req.session.user) {
     res.json({ success: true, user: req.session.user });
   } else {
@@ -44,7 +50,7 @@ router.get('/user_data', (req, res) => {
   }
 });
 
-router.post('/send', (req, res) => {
+router.post('/send', authenticateToken, (req, res) => {
   console.log(req.body);
   
   const { phoneNumber, status } = req.body;
@@ -86,7 +92,7 @@ router.post('/sendVerificationCodeSignUp', (req, res) => {
 
 
 
-router.get('/products', async (req, res) => {
+router.get('/products', authenticateToken, async (req, res) => {
   try {
     const products = await database.getProducts();
     res.json({ success: true, products });
@@ -443,7 +449,7 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
   }
 });
 
-router.post("/order", async (req, res) => {
+router.post("/order", authenticateToken, async (req, res) => {
   const { userID, storeID, storeName, products } = req.body;
   console.log("Creating order...", req.body);
   try {

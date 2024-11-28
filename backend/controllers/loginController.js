@@ -2,6 +2,7 @@ const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const { sendVerificationCode } = require('../controllers/authenticationController');
 const { user } = require('../database/config');
+const jwt = require('jsonwebtoken');
 
 // Login-funktion
 const login = async (req, res) => {
@@ -72,15 +73,19 @@ const login = async (req, res) => {
             console.error('Failed to send verification code after login:', verificationResponse.message);
             return res.status(500).json({ success: false, message: 'Failed to send verification code.' });
         }
-
         // Returner succesrespons til klienten
         req.session.loggedin = true;
         req.session.user = userData;
+
+        const token = jwt.sign(req.session.user, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: '1h', // Token udløber efter 1 time
+        });
 
         res.status(200).json({
             success: true,
             message: 'Login successful. Verification code sent.',
             user: userData,
+            token: token // JWT-token inkluderes her
         });
 
     } catch (err) {
