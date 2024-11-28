@@ -38,17 +38,22 @@
   <img src="/assets/Joe billede.svg" alt="Chatbot" class="chatbot-icon">
 </button>
 
-  <!-- Chatbot Modal -->
-  <div id="chatbot-modal" class="chatbot-modal">
-    <div class="chatbot-modal-content">
-      <span id="chatbot-close" class="chatbot-close">&times;</span>
-      <dic class="chatbot-title">
-        <h2>JOE-sephine</h2>
-      </dic>
-      <div id="chatbot-messages" class="chatbot-messages"></div>
-      <input type="text" id="chatbot-input" placeholder="Skriv din besked...">
+ <!-- Chatbot Modal -->
+<div id="chatbot-modal" class="chatbot-modal">
+  <div class="chatbot-modal-content">
+    <span id="chatbot-close" class="chatbot-close">&times;</span>
+    <div class="chatbot-title">
+      <!-- <img src="/assets/JoeLogo.svg" alt="Joe Logo" class="chatbot-logo"> -->
+      <h2>JOE-sephine</h2>
     </div>
+    <div id="chatbot-messages" class="chatbot-messages"></div>
+    <!-- Typing Indicator -->
+    <div id="typing-indicator" class="typing-indicator" style="display: none;">
+      <img src="/assets/JoeLogo.svg" alt="Loading..." class="loading-logo">
+    </div>
+    <input type="text" id="chatbot-input" placeholder="Skriv din besked...">
   </div>
+</div>
 
 </main>
   <div id="footer-container"></div>

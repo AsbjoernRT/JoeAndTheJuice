@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   // Delay opdatering af badge
   setTimeout(() => {
@@ -13,7 +12,9 @@ const chatbotToggle = document.getElementById("chatbot-toggle");
 const chatbotModal = document.getElementById("chatbot-modal");
 const chatbotClose = document.getElementById("chatbot-close");
 const chatbotMessages = document.getElementById("chatbot-messages");
-const chatbotInput = document.getElementById("chatbot-input");
+const chatbotInput = document.getElementById('chatbot-input');
+const typingIndicator = document.getElementById('typing-indicator');
+const messagesContainer = document.getElementById('chatbot-messages');
 
 // Åbn chatbot modal
 chatbotToggle.addEventListener("click", () => {
@@ -26,58 +27,100 @@ chatbotClose.addEventListener("click", () => {
 });
 
 // Send besked ved Enter tast
-chatbotInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
+chatbotInput.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter' && chatbotInput.value.trim() !== '') {
     const userMessage = chatbotInput.value.trim();
-    if (userMessage) {
-      appendMessage("Bruger", userMessage);
-      chatbotInput.value = "";
-      handleUserMessage(userMessage);
-    }
+
+    // Append user's message
+    appendMessage('user', userMessage);
+
+    // Clear input and show loading
+    chatbotInput.value = '';
+    typingIndicator.style.display = 'block';
+    chatbotInput.disabled = true;
+
+    // Fetch chatbot response
+    fetch('/chatbot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userMessage })
+    })
+    .then(response => response.json())
+    .then(data => {
+      typingIndicator.style.display = 'none';
+      chatbotInput.disabled = false;
+      // Display response with typewriting effect
+      typeWriterEffect(data.response);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      typingIndicator.style.display = 'none';
+      chatbotInput.disabled = false;
+    });
   }
 });
 
 function appendMessage(sender, message, options = {}) {
+  // Fjern typing-indikatoren, hvis den eksisterer
+  const typingIndicator = document.getElementById("typing-indicator");
+  if (typingIndicator) {
+    typingIndicator.style.visibility = "hidden";
+  }
+
   const messageElement = document.createElement("div");
   messageElement.classList.add("message");
 
-  // Opret elementer til afsender og besked
+  // Opret element til afsenderen
   const senderElement = document.createElement("div");
   senderElement.classList.add("sender");
 
   const messageContent = document.createElement("div");
   messageContent.classList.add("message-content");
-  messageContent.textContent = message;
 
-  // Hvis afsenderen er Chatbot, indsæt ikon
+  // Hvis afsenderen er Chatbot, indsæt Joe-logoet
   if (sender === "Chatbot") {
     const botIcon = document.createElement("img");
-    botIcon.src = "/assets/Joe billede.svg"; // Opdater stien til dit ikon
+    botIcon.src = "/assets/Joe billede.svg";
     botIcon.alt = "Chatbot";
     botIcon.classList.add("chatbot-icon");
 
     senderElement.appendChild(botIcon);
+
+    // Tilføj typewriting-effekt for Chatbot-beskeder
+    if (message) {
+      let i = 0;
+      function typeWriter() {
+        if (i < message.length) {
+          messageContent.textContent += message.charAt(i);
+          i++;
+          setTimeout(typeWriter, 50); // Justér skrivhastighed
+        }
+      }
+      typeWriter();
+    }
   } else {
+    // Hvis afsenderen er brugeren, formatter beskeden som brugerbesked
     messageElement.classList.add("user");
+    messageContent.textContent = message;
   }
 
-  // Saml beskedelementet
+  // Saml besked-elementet
   messageElement.appendChild(senderElement);
   messageElement.appendChild(messageContent);
 
-  // Håndter eventuelle ekstra muligheder (f.eks. knapper)
+  // Håndtér eventuelle ekstra valgmuligheder, f.eks. knapper
   if (options.showCheckoutButton) {
     const checkoutButton = document.createElement("button");
     checkoutButton.classList.add("checkout-button");
     checkoutButton.textContent = "Gå til Checkout";
     checkoutButton.addEventListener("click", () => {
-      // Omdiriger til checkout-siden
-      window.location.href = "/checkout"; // Opdater stien til din checkout-side
+      // Redirect til checkout-side
+      window.location.href = "/checkout";
     });
     messageElement.appendChild(checkoutButton);
   }
 
-  // Tilføj beskeden til chatvinduet
+  // Append besked til chatbot-vinduet
   chatbotMessages.appendChild(messageElement);
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
@@ -89,6 +132,9 @@ let uniqueIdCounter = 0;
 
 
 async function handleUserMessage(userMessage) {
+  // const loadingElement = appendLoadingMessage(); // Tilføj spinner som besked
+  showTypingIndicator();
+
   // Tilføj system-besked, hvis det er første besked
   if (conversationHistory.length === 0) {
     const systemMessage = {
@@ -115,6 +161,10 @@ async function handleUserMessage(userMessage) {
 
     const data = await response.json();
 
+    hideTypingIndicator(); // Skjul prikker
+    // Fjern loading-elementet
+    // chatbotMessages.removeChild(loadingElement);
+
     if (data.error) {
       throw new Error(data.error);
     }
@@ -133,10 +183,13 @@ async function handleUserMessage(userMessage) {
       console.log("Function Name:", assistantMessage.function_call.name);
       console.log("Function Arguments:", assistantMessage.function_call.arguments);
 
-      // Hvis funktionen er 'checkout', sæt flaget
-      if (assistantMessage.function_call.name === "checkout") {
-        showCheckoutButton = true;
+      if (assistantMessage.content) {
+        displayTypewriterEffect(assistantMessage.content);
+        if (assistantMessage.content.toLowerCase().includes("checkout-knappen")) {
+          showCheckoutButton = true;
+        }
       }
+
 
       // Send en tom brugerbesked for at få assistentens svar efter funktionskaldet
       await handleUserMessage("");
@@ -150,6 +203,7 @@ async function handleUserMessage(userMessage) {
       });
       // Vis assistentens svar i chatvinduet
       if (assistantMessage.content) {
+       
         // Tjek for nøgleord i assistentens svar
     const lowerCaseContent = assistantMessage.content.toLowerCase();
     if (
@@ -199,4 +253,80 @@ async function updateCartBadge() {
   } catch (error) {
     console.error("Fejl ved opdatering af kurvbadge:", error);
   }
+}
+
+function displayTypewriterEffect(message) {
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("message", "bot-message");
+  chatbotMessages.appendChild(messageElement);
+
+  let i = 0;
+  function typeWriter() {
+    if (i < message.length) {
+      messageElement.textContent += message.charAt(i);
+      i++;
+      setTimeout(typeWriter, 1); // Juster hastigheden
+    }
+  }
+  typeWriter();
+}
+
+function appendLoadingMessage() {
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("message", "bot-message", "loading-message");
+
+  const senderElement = document.createElement("div");
+  senderElement.classList.add("sender");
+
+  const loadingSpinner = document.createElement("div");
+  loadingSpinner.classList.add("spinner");
+
+  senderElement.appendChild(loadingSpinner); // Tilføj spinner til sender
+  messageElement.appendChild(senderElement);
+
+  chatbotMessages.appendChild(messageElement);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+  return messageElement; // Returnér elementet, så det kan fjernes senere
+}
+
+function showLoadingSpinner() {
+  const loadingElement = document.getElementById("chatbot-loading");
+  loadingElement.style.display = "block";
+}
+
+function hideLoadingSpinner() {
+  const loadingElement = document.getElementById("chatbot-loading");
+  loadingElement.style.display = "none";
+}
+
+function showTypingIndicator() {
+  const typingIndicator = document.getElementById("typing-indicator");
+  if (typingIndicator) {
+    typingIndicator.style.visibility = "visible";
+  }
+}
+
+function hideTypingIndicator() {
+  const typingIndicator = document.getElementById("typing-indicator");
+  if (typingIndicator) {
+    typingIndicator.style.visibility = "hidden";
+  }
+}
+
+function typeWriterEffect(text) {
+  let i = 0;
+  const speed = 50;
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message', 'chatbot');
+  messagesContainer.appendChild(messageElement);
+
+  function typeWriter() {
+    if (i < text.length) {
+      messageElement.textContent += text.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+  }
+  typeWriter();
 }
