@@ -17,34 +17,35 @@ if (cluster.isMaster) {
     cluster.fork();
   }
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    console.log("Starting a new worker");
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died. Starting a new worker.`);
     cluster.fork();
   });
 } else {
+  const app = require('./backend/app');
+  const database = require('./backend/database/database');
+
   async function startServer() {
     try {
-      // Forbind til databasen
+      // Connect to the database
       await database.connectToDatabase();
-      console.log("Database connected successfully");
+      console.log(`Database connected successfully by Worker ${process.pid}`);
 
-      // Importer routes efter databaseforbindelsen er etableret
+      // Import and use routes
       const apiRoutes = require("./backend/routes/apiRoutes");
       const viewRoutes = require("./backend/routes/viewRoutes");
 
-      // Brug routes
       app.use("/api", apiRoutes);
       app.use("/", viewRoutes);
 
-      // Start serveren
+      // Start the server
       const PORT = process.env.PORT || 3000;
       app.listen(PORT, () => {
-        console.log(`Server is running on port: ${PORT}`);
+        console.log(`Worker ${process.pid} is listening on port ${PORT}`);
       });
     } catch (error) {
       console.error("Failed to start server:", error);
-      process.exit(1); // Afslut processen med en fejlkode
+      process.exit(1); // Exit process with failure
     }
   }
 

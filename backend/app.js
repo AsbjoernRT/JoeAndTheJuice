@@ -7,6 +7,13 @@ const app = express();
 const session = require('express-session');
 const RedisStore = require('connect-redis').default;
 const redis = require('redis');
+const rateLimit = require('express-rate-limit');
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+});
+
+app.use('/api/', apiLimiter);
 
 // Middleware
 app.use(cors());
