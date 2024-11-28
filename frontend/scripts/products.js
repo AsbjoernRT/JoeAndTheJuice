@@ -5,7 +5,7 @@ async function getAllProducts() {
   try {
     const response = await fetch('/api/allProducts', {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     if (!response.ok) {
@@ -13,14 +13,12 @@ async function getAllProducts() {
     }
 
     const data = await response.json();
-
     if (!data.success) {
       console.error('Failed to fetch products:', data.message);
       return null;
     }
 
-    // Return the products array directly
-    return data.products;
+    return data.products; // Return the products array
   } catch (error) {
     console.error('Error fetching products:', error);
     return null;
@@ -77,8 +75,8 @@ async function displayProducts() {
 }
 
 function createProductCard(product) {
-  const card = document.createElement("div");
-  card.className = "product-card";
+  const card = document.createElement('div');
+  card.className = 'product-card';
 
   card.innerHTML = `
     <img src="/images/products/${product.productID}.jpg" 

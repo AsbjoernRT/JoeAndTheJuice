@@ -12,31 +12,35 @@ const redis = require('redis');
 app.use(cors());
 app.use(bodyParser.json());
 
+// Create Redis client
 const redisClient = redis.createClient({
-    host: '127.0.0.1',
-    port: 6379,
-  });
-  
-  app.use(
-    session({
-      store: new RedisStore({ client: redisClient }),
-      secret: 'joeandthechatbot',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        secure: false, // True hvis du bruger HTTPS
-        httpOnly: true,
-      },
-    })
-  );
+  host: '127.0.0.1',
+  port: 6379,
+});
 
-// app.use(session({
-//     secret: 'joeandthechatbot',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: false }, // Sæt til true, hvis du bruger HTTPS
-//   name: 'joeAndTheJuice.sid'  
-//   }));
+// Connect to Redis
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log('Redis client successfully connected.');
+  } catch (err) {
+    console.error('Failed to connect to Redis:', err);
+    process.exit(1); // Exit if Redis connection fails
+  }
+})();
+
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: 'joeandthechatbot',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+    },
+  })
+);
 
 app.use(express.urlencoded({ extended: true }));
 
