@@ -15,6 +15,71 @@ const { sendSMS } = sms;
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const session = require("express-session");
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// const db = require('./db'); // Assuming you have a database connection
+
+// Function to sync products to Stripe
+async function syncProductsToStripe() {
+  try {
+    // Get products from database
+    const result = await database.getProductsWithIngredients();
+
+    if (!result || !result.success || !Array.isArray(result.products)) {
+      throw new Error('Fetched products data is invalid');
+    }
+
+    const products = result.products; // Extract the products array
+    console.log('Fetched products:', products);
+
+    for (const product of products) {
+      let stripeProduct;
+
+      try {
+        stripeProduct = await stripe.products.retrieve(product.productID.toString());
+      } catch (error) {
+        // Create new product in Stripe if it doesn't exist
+        stripeProduct = await stripe.products.create({
+          id: product.productID.toString(), // Ensure the ID is a string for Stripe
+          name: product.productName,
+          description: `Category: ${product.productCategory}`,
+          metadata: {
+            category: product.productCategory,
+          },
+        });
+
+        // Create a price for the product
+        const price = await stripe.prices.create({
+          product: stripeProduct.id,
+          unit_amount: Math.round(product.productPrice * 100), // Convert to cents
+          currency: 'dkk',
+        });
+
+        // Update product with default price
+        await stripe.products.update(stripeProduct.id, {
+          default_price: price.id,
+        });
+      }
+
+      console.log(`Synced product: ${product.productName}`);
+    }
+
+    console.log('All products synced to Stripe successfully');
+  } catch (error) {
+    console.error('Error syncing products to Stripe:', error);
+    throw error;
+  }
+}
+
+// Add route to trigger sync
+router.post('/sync-products-to-stripe', async (req, res) => {
+  try {
+    await syncProductsToStripe();
+    res.json({ success: true, message: 'Products synced to Stripe successfully' });
+  } catch (error) {
+    console.error('Sync error:', error);
+    res.status(500).json({ success: false, message: 'Failed to sync products' });
+  }
+});
 
 
 router.use(express.json());
@@ -570,5 +635,55 @@ router.post('/cart/add', (req, res) => {
   }
 });
 
+router.post('/create-checkout-session', async (req, res) => {
+  // Fetch priceId for the given productId
+  const priceId = await getPriceForProduct(productId);
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: '{{PRICE_ID}}',
+        quantity: 1,
+      },
+    ],
+    mode: 'payment',
+    success_url: `${YOUR_DOMAIN}/success.html`,
+    cancel_url: `${YOUR_DOMAIN}/cancel.html`,
+});
+res.redirect(303, session.url);
+})  
+
+async function getPriceForProduct(productId) {
+  try {
+    // Fetch all prices for the given product
+    const prices = await stripe.prices.list({
+      product: productId,
+    });
+
+    if (prices.data.length === 0) {
+      throw new Error(`No prices found for product ID: ${productId}`);
+    }
+
+    // Assuming you want the first price (or a specific one based on criteria)
+    const price = prices.data[0]; // Adjust logic if multiple prices exist
+    return price.id;
+  } catch (error) {
+    console.error("Error fetching price:", error);
+    throw error;
+  }
+}
+
+// // Example usage
+// (async () => {
+//   const productId = "prod_12345"; // Replace with your actual product ID
+//   const priceId = await getPriceForProduct(productId);
+//   console.log("Price ID:", priceId);
+// })();
+// (async () => {
+// const productpriceID = await getPriceForProduct(62);
+
+// console.log(productpriceID);
+// })();
 
 module.exports = router;

@@ -65,7 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Payload to send:", payload);
         // Send the data to the backend
         const response = await fetch("/api/order", {
-          method: "POST",
+        // const response = await fetch("/create-checkout-sessionr", {
+        method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
