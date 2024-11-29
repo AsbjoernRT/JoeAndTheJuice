@@ -16,6 +16,10 @@ const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
 const session = require("express-session");
 const { authenticateToken } = require('../controllers/jwtToken');
 
+// Protect all routes under '/api'
+router.use(authenticateToken);
+router.use(express.json());
+
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 // const db = require('./db'); // Assuming you have a database connection
 
@@ -81,9 +85,6 @@ router.post('/sync-products-to-stripe', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to sync products' });
   }
 });
-
-
-router.use(express.json());
 
 router.get('/test-token', (req, res) => {
   if (req.session.token) {
