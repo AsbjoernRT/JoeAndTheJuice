@@ -86,14 +86,6 @@ router.post('/sync-products-to-stripe', async (req, res) => {
   }
 });
 
-router.get('/test-token', (req, res) => {
-  if (req.session.token) {
-    res.json({ success: true, token: req.session.token });
-  } else {
-    res.status(401).json({ success: false, message: 'No token found in session' });
-  }
-});
-
 // Route til registrering af nye brugere
 router.post('/register', (req, res, next) => {
   register(req, res, next); // Kalder register-funktionen fra signupController
@@ -150,11 +142,10 @@ router.post('/sendVerificationCode', (req, res) => {
 
 router.post('/sendVerificationCodeSignUp', (req, res) => {
   console.log(req.body);
-  const { phoneNumber, code } = req.body;
-  phoneNumberDecrypted = decryptWithPrivateKey(phoneNumber);
-  console.log("Dekrypteret telefonnummer:",  phoneNumberDecrypted);
+  const { phoneNumber } = req.body;
+  console.log("Dekrypteret telefonnummer:",  phoneNumber);
   
-  sendVerificationCode(phoneNumberDecrypted);
+  sendVerificationCode(phoneNumber);
   res.status(200).json({ success: true, message: 'SMS sent' });
 });
   
