@@ -49,8 +49,39 @@ const sendSMS = (phoneNumber, status, orderID, formattedProducts,location) => {
     .catch((error) => console.error("Fejl ved afsendelse af besked:", error));
 };
 
+async function formatProductsForSMS(products, totalPrice) {
+    try {
+      // Get product details from database
+      const productsWithNames = await Promise.all(
+        products.map(async (product) => {
+          const productDetails = await database.getProductById(product.productID);
+          return {
+            ...product,
+            productName: productDetails.productName,
+          };
+        })
+      );
+  
+      const productLines = productsWithNames.map(
+        (product) => `${product.quantity}x ${product.productName}`
+      );
+  
+      const formattedProducts = {
+        productList: productLines.join(", "),
+        totalItems: products.reduce((sum, p) => sum + p.quantity, 0),
+        totalPrice: totalPrice,
+      };
+  
+      console.log("Product lines:", productLines);
+      console.log("Formatted Products:", formattedProducts); // Debug her
+      return formattedProducts;
+    } catch (error) {
+      console.error("Error formatting products:", error);
+      throw error;
+    }
+  }
 // Eksempel på at sende beskeder
 //sendSMS('+4561281921', 'klar'); // Sender besked om, at ordren er klar
 //sendSMS('+4561281921', 'vent'); // Sender besked om, at ordren er under forberedelse
 
-module.exports = { sendSMS };
+module.exports = { sendSMS, formatProductsForSMS };
