@@ -9,6 +9,7 @@ const RedisStore = require("connect-redis").default;
 const redis = require("redis");
 const rateLimit = require("express-rate-limit");
 const { authenticateToken } = require("./controllers/jwtToken");
+const favicon = require('serve-favicon');
 const app = express();
 
 // Middleware
@@ -80,6 +81,8 @@ app.use(
     },
   })
 );
+
+app.use(favicon(path.join(__dirname, '..', 'frontend', 'favicon_io', 'favicon.ico')));
 
 app.use('/api', authenticateToken);
 
