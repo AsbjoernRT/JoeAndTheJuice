@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
-
+  
   console.log(`Current path: ${path}`); // Debug: Se stien i konsollen
-  displayProducts()
-  if (path === "/checkout") {
+  
+  if (path === "/signup") {
+    setTimeout(() => {
+      updateCartBadge();
+    }, 50);
+  }
+  if (path === "/") {
+    displayProducts();
+  }
+  // displayProducts()
+  if (path === "/cart") {
     // Kald kun checkout-relaterede funktioner
-    checkLoginStatus();
+    // checkLoginStatus();
     populateUserDetails();
     checkoutProducts();
     storeSearch();
@@ -112,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50);
   }
 
+
   const menuToggle = document.getElementById("menu-toggle");
   const sidebar = document.getElementById("sidebar");
   const content = document.getElementById("content");
@@ -148,7 +158,7 @@ async function populateUserDetails() {
 // Fetch user data from the server and store in session storage
 async function fetchUserData() {
   try {
-    const response = await fetch("/api/user_data");
+    const response = await fetch("/api/userData");
     const data = await response.json();
 
     if (data.success && data.user) {
@@ -211,7 +221,9 @@ function populateFormFields(userData) {
 }
 
 function checkLoginStatus() {
-  fetch("/api/login_status")
+  console.log("Checking login status...");
+  
+  fetch("/api/loginStatus")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Failed to check login status");
@@ -231,6 +243,7 @@ function checkLoginStatus() {
     })
     .catch((error) => {
       console.error("Fejl ved tjek af login status:", error);
+      window.location.href = "/login";
     });
 }
 
