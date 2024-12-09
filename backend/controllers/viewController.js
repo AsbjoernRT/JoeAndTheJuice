@@ -21,6 +21,10 @@ exports.getCheckoutPage = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/checkout.html'));
   };
 
+  exports.getCartPage = (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/pages/cart.html'));
+  };
+
   exports.getHeader = (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/pages/partials/header.html'));
   };

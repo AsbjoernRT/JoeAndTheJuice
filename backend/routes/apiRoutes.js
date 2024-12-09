@@ -1,23 +1,21 @@
 // backend/routes/apiRoutes.js
 const express = require("express");
 const router = express.Router();
-const apiController = require("../controllers/apiController");
-const axios = require("axios");
-const database = require("../database/database");
-const signupController = require("../controllers/signupController");
-const loginController = require("../controllers/loginController");
-const { login } = loginController;
-const { register } = signupController;
-const checkVerification = require("../controllers/authenticationController");
-const { sendVerificationCode, checkVerificationCode } = checkVerification;
-const sms = require("../controllers/sms");
-const { sendSMS, formatProductsForSMS } = sms;
-const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
-const session = require("express-session");
 const { authenticateToken } = require("../controllers/jwtToken");
+
+const database = require("../database/database");
+const { register } = require("../controllers/signupController");
+const loginController = require("../controllers/loginController");
+const { checkUserExists } = require("../controllers/authController");
+// const { sendVerificationCode, checkVerificationCode } = checkVerification;
+const { checkVerificationCode, sendVerificationCode } = require("../controllers/smsController");
+const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
+
+
 const { callOpenAI } = require("../controllers/chatController");
-// Import the Stripe controller
+// Import the Stripe controllers
 const { createCheckoutSession } = require('../controllers/stripeController');
+const { createOrder } = require("../controllers/orderController");
 
 // Protect all routes under '/api'
 router.use(authenticateToken);
@@ -28,6 +26,7 @@ router.use(express.json());
 router.post("/sync-products-to-stripe", async (req, res) => {
   try {
     await syncProductsToStripe();
+
     res.json({
       success: true,
       message: "Products synced to Stripe successfully",
@@ -40,25 +39,64 @@ router.post("/sync-products-to-stripe", async (req, res) => {
   }
 });
 
-// Route til registrering af nye brugere
-router.post("/register", (req, res, next) => {
-  register(req, res, next); // Kalder register-funktionen fra signupController
+// Auth routes
+router.post("/register", async (req, res) => {
+  try {
+    await register(req, res);
+
+    res.json({ success: true, message: "User registered successfully." });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ success: false, message: "Failed to register user." });
+  }
 });
 
-router.post("/login", loginController.login); // Processér login-anmodningen
+router.post("/sessionInfo", (req, res) => {
+  req.session.info = req.body;
+  res.json({ success: true });
+});
 
-router.get("/login_status", (req, res) => {
-  console.log(req.session);
+router.get("/getSignupInfo", (req, res) => {
+  console.log("Session info:", req.session.info);
+  
+  if (req.session.info) {
+    res.status(200).json(req.session);
+  } else {
+    res.status(400).json({ success: false, message: "No signup info found." });
+  }
+});
 
-  if (req.session.loggedin) {
-    // Hvis brugeren er logget ind
+router.post("/login", loginController.login);
+router.post("/checkUserExists", (req, res) => {
+  checkUserExists(req, res);
+});
+router.post("/sendVerificationCode", async (req, res) => {
+  const phone = req.body.phoneNumber;
+  try {
+    const result = await sendVerificationCode(phone);
+    res.json(result); // Send resultatet tilbage til klienten
+  } catch (error) {
+    console.error("Error sending verification code:", error);
+    res.status(500).json({ success: false, message: "Failed to send verification code." });
+  }
+});
+
+
+router.get("/loginStatus", (req, res) => {
+
+
+  if (req.session.loggedIn) {  
+   console.log("Session loggedIn:", req.session.loggedIn);
     res.json({ loggedIn: true });
   } else {
+    console.log("Session loggedIn:", req.session);
     res.json({ loggedIn: false });
   }
 });
 
-router.get("/user_data", authenticateToken, (req, res) => {
+router.get("/userData", (req, res) => {
+  console.log("Session user:", req.session.user);
+  
   if (req.session && req.session.user) {
     res.json({ success: true, user: req.session.user });
   } else {
@@ -66,48 +104,21 @@ router.get("/user_data", authenticateToken, (req, res) => {
   }
 });
 
-router.post("/send", authenticateToken, (req, res) => {
-  console.log(req.body);
+//**** Slet denne??? ******* */
+// router.post("/send", authenticateToken, (req, res) => {
+//   console.log(req.body);
 
-  const { phoneNumber, status } = req.body;
-  sendSMS(phoneNumber, status);
-  res.status(200).json({ success: true, message: "SMS sent" });
-});
+//   const { phoneNumber, status } = req.body;
+//   sendSMS(phoneNumber, status);
+//   res.status(200).json({ success: true, message: "SMS sent" });
+// });
 
 //Bruges til at sende en verificerings kode til en bruger der er ved at logge ind
 
-router.post("/sendVerificationCode", (req, res) => {
-  console.log(req.body);
-  const { phoneNumber, code } = req.body;
-  checkVerificationCode(phoneNumber, code)
-    .then((verificationResult) => {
-      if (verificationResult.success) {
-        res
-          .status(200)
-          .json({ success: true, message: verificationResult.message });
-      } else {
-        res
-          .status(401)
-          .json({ success: false, message: verificationResult.message });
-      }
-    })
-    .catch((error) => {
-      console.error("Fejl i verificerings-endpoint:", error);
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error." });
-    });
-});
-
-//Bruges til at sende en verificerings kode til en bruger der er ved at oprette sig
-
-router.post("/sendVerificationCodeSignUp", (req, res) => {
-  console.log(req.body);
-  const { phoneNumber } = req.body;
-  console.log("Dekrypteret telefonnummer:", phoneNumber);
-
-  sendVerificationCode(phoneNumber);
-  res.status(200).json({ success: true, message: "SMS sent" });
+// SMS verification routes
+// router.post("/sendVerificationCodeSignUp", checkVerificationCode);
+router.post("/checkVerificationCode",(req,res) => {
+  checkVerificationCode(req,res);
 });
 
 router.get("/products", authenticateToken, async (req, res) => {
@@ -167,40 +178,7 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
   }
 });
 
-router.post("/order", authenticateToken, async (req, res) => {
-  const { userID, storeID, storeName, products } = req.body;
-  console.log("Creating order...", req.body);
-  try {
-    const result = await database.createOrder(userID, storeID, products);
-    req.session.cart = []; // Ryd brugerens kurv
-    res.json(result);
-    console.log("Resultat", result);
-
-    let SMSphone = "+45" + req.session.user.phone;
-    let formattedProducts = await formatProductsForSMS(
-      products,
-      result.totalPrice
-    );
-    console.log("Formatted products for SMS:", formattedProducts);
-    let formattedStoreName = storeName.trim();
-    // Only send SMS if we have formatted products
-    if (formattedProducts && formattedProducts.productList) {
-      let SMSphone = "+45" + req.session.user.phone;
-      await sendSMS(
-        SMSphone,
-        "bekræftelse",
-        result.orderID,
-        formattedProducts,
-        formattedStoreName
-      );
-    }
-  } catch (error) {
-    console.error("Error creating order:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to create order." });
-  }
-});
+router.post("/order", authenticateToken, createOrder);
 
 router.post("/stores", async (req, res) => {
   console.log("Finding stores...", req.body);

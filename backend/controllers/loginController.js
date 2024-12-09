@@ -1,6 +1,6 @@
 const database = require('../database/database');
 const { decryptWithPrivateKey } = require('../controllers/encryptionUtils');
-const { sendVerificationCode } = require('../controllers/authenticationController');
+const { sendVerificationCode } = require('./smsController');
 const { user } = require('../database/config');
 const jwt = require('jsonwebtoken');
 
@@ -55,10 +55,10 @@ const login = async (req, res) => {
         };
 
         if (isMasterUser) {
-            console.log('Masterbruger logget ind - totrinsgodkendelse springes over.');
+            console.log('Masterbruger logget ind - totrinsgodkendelse springes over.', userData);
 
             // Gem session direkte
-            req.session.loggedin = true;
+            req.session.loggedIn = true;
             req.session.user = userData;
             return res.status(200).json({ success: true, message: 'Login successful for master user.', user: req.session.user });
         }
@@ -74,18 +74,19 @@ const login = async (req, res) => {
             return res.status(500).json({ success: false, message: 'Failed to send verification code.' });
         }
         // Returner succesrespons til klienten
-        req.session.loggedin = true;
+        req.session.loggedIn = true;
+        req.session.info = userData;
         req.session.user = userData;
 
-        const token = jwt.sign(req.session.user, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '1h', // Token udløber efter 1 time
-        });
+        // const token = jwt.sign(req.session.user, process.env.ACCESS_TOKEN_SECRET, {
+        //     expiresIn: '1h', // Token udløber efter 1 time
+        // });
 
         res.status(200).json({
             success: true,
             message: 'Login successful. Verification code sent.',
             user: userData,
-            token: token // JWT-token inkluderes her
+            // token: token // JWT-token inkluderes her
         });
 
     } catch (err) {
