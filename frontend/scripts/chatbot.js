@@ -13,10 +13,17 @@ const chatbotModal = document.getElementById("chatbot-modal");
 const chatbotClose = document.getElementById("chatbot-close");
 const chatbotMessages = document.getElementById("chatbot-messages");
 const chatbotInput = document.getElementById("chatbot-input");
+const orderButton = document.querySelector(".hero-button");
 
 // Åbn chatbot modal
 chatbotToggle.addEventListener("click", () => {
   chatbotModal.style.display = "block";
+});
+
+// Åbn chatbot modal ved at klikke på order now knap
+orderButton.addEventListener("click", () => {
+  chatbotModal.style.display = "block";
+  console.log("knap trykket");
 });
 
 // Luk chatbot modal
