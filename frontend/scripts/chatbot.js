@@ -78,7 +78,7 @@ function appendMessage(sender, message, options = {}) {
     checkoutButton.textContent = "Gå til Checkout";
     checkoutButton.addEventListener("click", () => {
       // Omdiriger til checkout-siden
-      window.location.href = "/checkout"; // Opdater stien til din checkout-side
+      window.location.href = "/cart"; // Opdater stien til din checkout-side
     });
     messageElement.appendChild(checkoutButton);
   }
