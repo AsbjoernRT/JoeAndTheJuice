@@ -11,6 +11,7 @@ router.get('/order', viewController.getOrderPage);
 router.get('/contact', viewController.getContactPage);
 router.get('/checkout', viewController.getCheckoutPage);
 router.get('/cart', viewController.getCartPage);
+router.get('/success', viewController.getSuccessPage);
 router.get('/header', viewController.getHeader);
 router.get('/footer', viewController.getFooter);
 router.get('/login', viewController.getLogin);

@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const { authenticateToken } = require("../controllers/jwtToken");
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const database = require("../database/database");
 const { register } = require("../controllers/signupController");
 const loginController = require("../controllers/loginController");
@@ -178,7 +178,37 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
   }
 });
 
-router.post("/order", authenticateToken, createOrder);
+router.post("/order", authenticateToken,(req,res) => {
+  const { sessionId } = req.body;
+  const sessionOrder = req.session.order;
+
+  console.log("Creating order with session ID for :", sessionId, "Order:", sessionOrder);
+  
+
+  if (!sessionOrder || !sessionId) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Missing order data or session ID' 
+    });
+  }
+  
+  if (sessionId === sessionOrder.sessionId) {
+    console.log("So far so good...");
+
+    // Extract order data from session
+    const orderData = {
+      userID: sessionOrder.userID,
+      storeID: sessionOrder.storeID,
+      storeName: sessionOrder.storeName,
+      products: sessionOrder.products
+    };
+
+
+    createOrder(req, res);
+  } else {
+    res.status(200).json({ success: false, message: 'Invalid session ID.' });
+  }
+}); 
 
 router.post("/stores", async (req, res) => {
   console.log("Finding stores...", req.body);
@@ -257,6 +287,37 @@ router.post("/cart/add", (req, res) => {
 });
 
 // Define the route
-router.post('/create-checkout-session', createCheckoutSession);
+router.post('/checkout', async (req, res) => {
+  console.log("Creating checkout session...", req.body);
+  
+  createCheckoutSession(req, res);
+  // const prizeId = await 
+  // console.log("Creating checkout session...", req.body.cart);
+  
+  // try {
+  //   const session = await stripe.checkout.sessions.create({
+  //     line_items: req.body.cart.map((item) => {
+  //       return {
+  //         price_data: {
+  //           currency: 'dkk',
+  //           product_data: {
+  //             name: item.productName,
+  //           },
+  //           unit_amount: item.productPrice * 100,
+  //         },
+  //         quantity: item.quantity,
+  //       };
+  //     }),
+  //     mode: 'payment',
+  //     success_url: 'http://localhost:3000/success',
+  //     cancel_url: 'http://localhost:3000/cancel',
+  //   });
+
+  //   res.json({ id: session.id });
+  // } catch (error) {
+  //   console.error("Error creating checkout session:", error);
+  //   res.status(500).json({ success: false, message: "Failed to create checkout session." });
+  // }
+});
 
 module.exports = router;
