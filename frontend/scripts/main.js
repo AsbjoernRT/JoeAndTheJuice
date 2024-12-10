@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   const path = window.location.pathname;
-  
+
   console.log(`Current path: ${path}`); // Debug: Se stien i konsollen
-  
+
   if (path === "/signup") {
     setTimeout(() => {
       updateCartBadge();
@@ -11,6 +11,33 @@ document.addEventListener("DOMContentLoaded", () => {
   if (path === "/") {
     displayProducts();
   }
+
+  if (path === "/success") {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("session_id");
+  
+    if (sessionId) {
+      console.log("Checkout session ID:", sessionId);
+      verifyOrder(sessionId)
+      
+    }
+  }
+
+    async function verifyOrder(sessionId) {
+      try {
+        const response = await fetch('/api/order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sessionId })
+        });
+    
+        const result = await response.json();
+        console.log('Order verification result:', result);
+      }catch (error) {
+        console.error('Error verifying order:', error);
+  }}
   // displayProducts()
   if (path === "/cart") {
     // Kald kun checkout-relaterede funktioner
@@ -73,9 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Payload to send:", payload);
         // Send the data to the backend
-        const response = await fetch("/api/order", {
+        // const response = await fetch("/api/order", {
         // const response = await fetch("/create-checkout-sessionr", {
-        method: "POST",
+        const response = await fetch("api/checkout", {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -84,34 +112,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const result = await response.json();
         console.log("Order response:", result);
-
-        // Handle backend response
-        if (result.success) {
-          alert(`Order placed successfully! Order ID: ${result.orderID}`);
-          sessionStorage.removeItem("cart");
-          sessionStorage.removeItem("selectedStore");
-          sessionStorage.removeItem("userData");
-          sessionStorage.removeItem("user");
-          sessionStorage.removeItem("orderID");
-          // Clear the cart after a successful order
-
-          // Opdater badge til 0
-          const cartBadge = document.getElementById("cart-badge");
-          if (cartBadge) {
-            cartBadge.textContent = "";
-            cartBadge.style.display = "none";
-          }
-          window.location.href = "/";
+        if (response.ok && result.success) {
+          // Redirect to the Stripe checkout page
+          window.location.href = result.url;
         } else {
-          console.error("Failed to place order:", result.message);
-          alert("Failed to place the order. Please try again.");
+          console.error("Error creating checkout session:", result.message);
+          alert("An error occurred while creating the checkout session.");
         }
       } catch (error) {
-        console.error("Error placing order:", error, result);
+        console.error("Error placing order:", error);
         alert(
           "An error occurred while placing the order. Please try again later."
         );
       }
+
+      //     // Handle backend response
+      //     if (result.success) {
+      //       alert(`Order placed successfully! Order ID: ${result.orderID}`);
+      //       sessionStorage.removeItem("cart");
+      //       sessionStorage.removeItem("selectedStore");
+      //       sessionStorage.removeItem("userData");
+      //       sessionStorage.removeItem("user");
+      //       sessionStorage.removeItem("orderID");
+      //       // Clear the cart after a successful order
+
+      //       // Opdater badge til 0
+      //       const cartBadge = document.getElementById("cart-badge");
+      //       if (cartBadge) {
+      //         cartBadge.textContent = "";
+      //         cartBadge.style.display = "none";
+      //       }
+      //       window.location.href = "/";
+      //     } else {
+      //       console.error("Failed to place order:", result.message);
+      //       alert("Failed to place the order. Please try again.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error placing order:", error, result);
+      //     alert(
+      //       "An error occurred while placing the order. Please try again later."
+      // );
+      // }
     });
   }
 
@@ -120,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCartBadge();
     }, 50);
   }
-
 
   const menuToggle = document.getElementById("menu-toggle");
   const sidebar = document.getElementById("sidebar");
@@ -222,7 +262,7 @@ function populateFormFields(userData) {
 
 function checkLoginStatus() {
   console.log("Checking login status...");
-  
+
   fetch("/api/loginStatus")
     .then((response) => {
       if (!response.ok) {
@@ -401,9 +441,9 @@ function selectItem(item) {
 async function addToCart(productID, productName, productPrice) {
   try {
     // Send produktdata til backend for at opdatere kurven
-    const response = await fetch('/api/cart/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("/api/cart/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productID: productID,
         productName: productName,
@@ -415,10 +455,10 @@ async function addToCart(productID, productName, productPrice) {
     const result = await response.json();
 
     if (result.success) {
-      console.log('Cart updated in backend:', result.cart);
+      console.log("Cart updated in backend:", result.cart);
 
       // Opdater sessionStorage med backendens seneste kurv
-      sessionStorage.setItem('cart', JSON.stringify(result.cart));
+      sessionStorage.setItem("cart", JSON.stringify(result.cart));
 
       // Opdater badge for at vise det samlede antal varer
       updateCartBadge();
@@ -426,11 +466,11 @@ async function addToCart(productID, productName, productPrice) {
       // Feedback til brugeren
       alert(`${productName} blev tilføjet til kurven!`);
     } else {
-      console.error('Failed to add to cart:', result.message);
-      alert('Kunne ikke tilføje til kurven. Prøv igen.');
+      console.error("Failed to add to cart:", result.message);
+      alert("Kunne ikke tilføje til kurven. Prøv igen.");
     }
   } catch (error) {
-    console.error('Error adding to cart:', error);
-    alert('Der opstod en fejl. Prøv igen senere.');
+    console.error("Error adding to cart:", error);
+    alert("Der opstod en fejl. Prøv igen senere.");
   }
 }

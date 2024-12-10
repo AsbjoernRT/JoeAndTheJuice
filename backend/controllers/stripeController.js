@@ -1,5 +1,5 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+require('dotenv').config();
 
 // Function to sync products to Stripe
 async function syncProductsToStripe() {
@@ -56,15 +56,15 @@ async function syncProductsToStripe() {
   }
 
   // Function to get price for a product
-async function getPriceForProduct(productId) {
+async function getPriceForProduct(productID) {
     try {
       // Fetch all prices for the given product
       const prices = await stripe.prices.list({
-        product: productId,
+        product: productID,
       });
   
       if (prices.data.length === 0) {
-        throw new Error(`No prices found for product ID: ${productId}`);
+        throw new Error(`No prices found for product ID: ${productID}`);
       }
   
       // Assuming you want the first price (or adjust logic accordingly)
@@ -78,28 +78,59 @@ async function getPriceForProduct(productId) {
   
   // Controller function for creating a checkout session
   async function createCheckoutSession(req, res) {
+    const order = req.body
+    req.session.order = order;
+    console.log('Creating checkout session with order:', req.session.order);
     try {
-      const { productId, quantity } = req.body; // Retrieve productId and quantity from request body
+      const products = req.body.products; // Retrieve array of products from request body
+      console.log('Creating checkout session with products:', products);
   
       // Validate input
-      if (!productId || !quantity) {
-        return res.status(400).json({ success: false, message: 'Product ID and quantity are required.' });
+      if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ success: false, message: 'Products array is required and cannot be empty.' });
       }
   
-      // Fetch priceId for the given productId
-      const priceId = await getPriceForProduct(productId);
+      // Build line_items array
+      const lineItems = [];
+      
   
+      for (const product of products) {
+        const { productID, quantity } = product;
+  
+        // Validate individual product
+        if (!productID || !quantity) {
+          return res.status(400).json({ success: false, message: 'Each product must have a productID and quantity.' });
+        }
+  
+        // Fetch priceId for the given productID
+        const priceId = await getPriceForProduct(productID);
+  
+        if (!priceId) {
+          return res.status(400).json({ success: false, message: `Price ID not found for product ID ${productID}.` });
+        }
+  
+        console.log(`Price ID for product ${productID}:`, priceId);
+  
+        // Add to line items
+        lineItems.push({
+          price: priceId,
+          quantity: quantity,
+        });
+      }
+  console.log('Line items:', lineItems);
+  
+      // Create checkout session
       const session = await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price: priceId,
-            quantity: quantity,
-          },
-        ],
+        line_items: lineItems,
         mode: 'payment',
-        success_url: `${process.env.CLIENT_URL}/success.html`,
+        success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.CLIENT_URL}/cancel.html`,
+        customer_email: req.session.user.email, // Add prefilled email here
       });
+
+      req.session.order.sessionId = session.id;
+      console.log('Checkout session created:', session.id);
+      
   
       res.json({ success: true, url: session.url });
     } catch (error) {
@@ -109,5 +140,5 @@ async function getPriceForProduct(productId) {
   }
 
   module.exports = {
-    createCheckoutSession, syncProductsToStripe
+    createCheckoutSession, 
   };

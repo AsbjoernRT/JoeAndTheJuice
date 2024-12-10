@@ -320,6 +320,8 @@ async searchStores(searchTerm) {
 }
 
 async createOrder(userID, storeID, productQuantities) {
+  console.log('Creating order for user:', userID, 'store:', storeID, 'products:', productQuantities);
+  
   await this.connectToDatabase();
   const transaction = new sql.Transaction(this.pool);
   

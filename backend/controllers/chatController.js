@@ -175,12 +175,12 @@ const { messages } = req.body;
             }
           : { status: "error", message: "Produktet blev ikke fundet." };
       } else if (functionName === "add_to_cart") {
-        const productId = functionArgs.product_id;
+        const productID = functionArgs.product_id;
         const quantity = functionArgs.quantity || 1; // Standard til 1, hvis ikke angivet
-        console.log("Adding product to cart:", productId, quantity);
+        console.log("Adding product to cart:", productID, quantity);
 
         const result = await database.addToCart(
-          productId,
+          productID,
           quantity,
           req.session
         );
@@ -199,14 +199,14 @@ const { messages } = req.body;
         
           console.log("Current cart:", cart);
         } else if (functionName === "remove_from_cart") {
-        const productId = functionArgs.product_id;
+        const productID = functionArgs.product_id;
         const quantity = functionArgs.quantity || 1; // Standard til 1, hvis ikke angivet
-        console.log("Removing ", quantity, " from cart:", productId);
+        console.log("Removing ", quantity, " from cart:", productID);
 
         if (!req.session.cart) req.session.cart = [];
 
         const existingItemIndex = req.session.cart.findIndex(
-          (item) => item.productID === productId
+          (item) => item.productID === productID
         );
 
         if (existingItemIndex !== -1) {

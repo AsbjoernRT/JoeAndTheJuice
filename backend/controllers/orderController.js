@@ -1,25 +1,43 @@
 // controllers/orderController.js
 const database = require("../database/database");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { formatProductsForSMS, sendSMS } = require("./smsController");
 
 exports.createOrder = async (req, res) => {
-  const { userID, storeID, storeName, products } = req.body;
-  console.log("Creating order...", req.body);
+  const sessionOrder = req.session.order;
+  console.log("Session order:", sessionOrder);
+  
+  const orderData = {
+    userID: sessionOrder.userID,
+    storeID: sessionOrder.storeID,
+    storeName: sessionOrder.storeName,
+    products: sessionOrder.products
+  };
+
+  const productData = {
+    products: req.session.cart
+  }
+
+  console.log("Cart products:", productData.products);
+  
+
+  console.log("Creating order...", orderData);
   try {
-    const result = await database.createOrder(userID, storeID, products);
+    const result = await database.createOrder(orderData.userID, orderData.storeID, productData.products);
     req.session.cart = []; // Ryd brugerens kurv
+    req.session.order = {}; // Ryd ordredata
     console.log("Resultat", result);
 
     const SMSphone = "+45" + req.session.user.phone;
     const formattedProducts = await formatProductsForSMS(
-      products,
+      productData.products,
       result.totalPrice
     );
     console.log("Formatted products for SMS:", formattedProducts);
-    const formattedStoreName = storeName.trim();
+    const formattedStoreName = orderData.storeName.trim();
     // Send SMS hvis vi har formatterede produkter
     if (formattedProducts && formattedProducts.productList) {
-      await sendSMS(
+      sendSMS(
         SMSphone,
         "bekræftelse",
         result.orderID,
@@ -33,3 +51,4 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to create order." });
   }
 };
+
