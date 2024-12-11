@@ -43,8 +43,10 @@ router.post("/sync-products-to-stripe", async (req, res) => {
 router.post("/register", async (req, res) => {
   try {
     await register(req, res);
+    console.log("her spiller det");
+    
 
-    res.json({ success: true, message: "User registered successfully." });
+    // res.json({ success: true, message: "User registered successfully." });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ success: false, message: "Failed to register user." });
@@ -104,19 +106,7 @@ router.get("/userData", (req, res) => {
   }
 });
 
-//**** Slet denne??? ******* */
-// router.post("/send", authenticateToken, (req, res) => {
-//   console.log(req.body);
 
-//   const { phoneNumber, status } = req.body;
-//   sendSMS(phoneNumber, status);
-//   res.status(200).json({ success: true, message: "SMS sent" });
-// });
-
-//Bruges til at sende en verificerings kode til en bruger der er ved at logge ind
-
-// SMS verification routes
-// router.post("/sendVerificationCodeSignUp", checkVerificationCode);
 router.post("/checkVerificationCode",(req,res) => {
   checkVerificationCode(req,res);
 });

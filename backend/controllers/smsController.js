@@ -8,7 +8,6 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID; // Twilio Account SID
 const authToken = process.env.TWILIO_AUTH_TOKEN; // Twilio Auth Token
 const verifyServiceSid = process.env.VERIFY_SERVICE_SID; // Twilio Verify Service SID
 
-
 // Opret Twilio-klienten
 const client = twilio(accountSid, authToken);
 
@@ -140,30 +139,7 @@ async function formatProductsForSMS(products, totalPrice) {
       throw error;
     }
   }
-// Eksempel på at sende beskeder
-//sendSMS('+4561281921', 'klar'); // Sender besked om, at ordren er klar
-//sendSMS('+4561281921', 'vent'); // Sender besked om, at ordren er under forberedelse
 
-// async function authSendVerificationCode (req, res) {
-//   const { phoneNumber } = req.body;
-//   console.log("Dekrypteret telefonnummer:", phoneNumber);
-//   const result = await sendVerificationCode(phoneNumber);
-//   if (result.success) {
-//       res.status(200).json({ success: true, message: result.message });
-//   } else {
-//       res.status(500).json({ success: false, message: result.message });
-//   }
-// };
-
-// async function authCheckVerificationCode (req, res) {
-//   const { phoneNumber, code } = req.body;
-//   const result = await checkVerificationCode(phoneNumber, code);
-//   if (result.success) {
-//       res.status(200).json({ success: true, message: result.message });
-//   } else {
-//       res.status(401).json({ success: false, message: result.message });
-//   }
-// };
 
 module.exports = {
   sendSMS,
