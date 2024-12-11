@@ -6,9 +6,7 @@ const viewController = require('../controllers/viewController');
 
 // Define view routes
 router.get('/', viewController.getHomePage);
-router.get('/menu', viewController.getMenuPage);
 router.get('/order', viewController.getOrderPage);
-router.get('/contact', viewController.getContactPage);
 router.get('/checkout', viewController.getCheckoutPage);
 router.get('/cart', viewController.getCartPage);
 router.get('/success', viewController.getSuccessPage);

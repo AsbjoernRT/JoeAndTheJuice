@@ -1,5 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Login-form handling
+function setupLoginForm() {
   const loginForm = document.querySelector(".login-form");
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -61,4 +60,4 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("An unexpected error occurred. Please try again later.");
       }
     });
-}});
+}};

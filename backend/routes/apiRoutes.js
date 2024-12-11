@@ -214,6 +214,19 @@ router.post("/stores", async (req, res) => {
   }
 });
 
+// Route til søgning af produkter.
+router.get("/productSearch", async (req, res) => {
+  // console.log(req);
+  try {
+    const result = await database.searchProducts(req.query.searchTerm);
+    // const res = await index.connectedDatabase.readAll("NutriDB.ingredient")
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // Route til søgning af stores.
 router.get("/store_search", async (req, res) => {
   // console.log(req);
