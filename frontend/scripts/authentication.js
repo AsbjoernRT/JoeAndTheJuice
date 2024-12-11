@@ -1,5 +1,5 @@
 //autentifikation af bruger
-document.addEventListener("DOMContentLoaded", async () => {
+async function signUpFunction() {
     const verificationForm = document.querySelector(".verification-form");
   
     const userInfo = await getUserInfo();
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
         console.error("Verification form not found.");
       }
-    });
+    };
   
     async function getUserInfo() {
         try {
@@ -117,3 +117,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("An unexpected error occurred. Please try again later.");
       }
     }
+    // Fetch user data from the server and store in session storage
+
+//   function checkLoginStatus() {
+//     console.log("Checking login status...");
+  
+//     fetch("/api/loginStatus")
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error("Failed to check login status");
+//         }
+//         return response.json();
+//       })
+//       .then((data) => {
+//         console.log("Login status:", data);
+//         if (data.loggedIn) {
+//           // Brugeren er logget ind
+//           console.log("Bruger er logget ind");
+//         } else {
+//           // Brugeren er ikke logget ind
+//           console.log("Bruger er ikke logget ind");
+//           window.location.href = "/login";
+//         }
+//       })
+//       .catch((error) => {
+//         console.error("Fejl ved tjek af login status:", error);
+//         window.location.href = "/login";
+//       });
+//   }

@@ -194,29 +194,6 @@ async function handleUserMessage(userMessage) {
 
 // Implementer funktionerne
 
-async function updateCartBadge() {
-  try {
-    const response = await fetch("/api/cart");
-    const data = await response.json();
-    console.log(data);
-
-    if (data.success) {
-      const cartBadge = document.getElementById("cart-badge");
-      const totalItems = data.totalItems;
-
-      if (totalItems > 0) {
-        cartBadge.textContent = totalItems;
-        cartBadge.style.display = "block";
-      } else {
-        cartBadge.style.display = "none";
-      }
-    } else {
-      console.error("Fejl ved hentning af kurvstatus:", data.message);
-    }
-  } catch (error) {
-    console.error("Fejl ved opdatering af kurvbadge:", error);
-  }
-}
 
 // Add this new function
 function typeWriter(text, element, speed = 50) {

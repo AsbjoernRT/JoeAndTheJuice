@@ -1,6 +1,4 @@
 // products.js
-
-// products.js
 async function getAllProducts() {
   try {
     const response = await fetch('/api/allProducts', {
@@ -91,3 +89,5 @@ function createProductCard(product) {
 
   return card;
 }
+
+

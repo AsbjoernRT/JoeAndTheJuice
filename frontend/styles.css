@@ -46,6 +46,32 @@ body, html {
     /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Lettere og mere defineret skygge */
 }
 
+#searchResults {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping if there are too many products */
+  gap: 20px; /* Adds space between products */
+  justify-content: center; /* Centers the products horizontally */
+  padding: 20px;
+}
+
+.product-card {
+  width: 200px; /* Adjust width for each card */
+  /* border: 1px solid #ddd; */
+  border-radius: 8px;
+  padding: 15px;
+  /* background: white; */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Centers the content within the card */
+}
+
+
+.product-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
 .product-card {
     margin: 10px;
     padding: 15px;
@@ -1182,4 +1208,76 @@ footer {
     50% { border-left-color: #2196f3 }
     100% { border-left-color: transparent }
   }
+
+.carousel-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  transition: transform 0.5s ease;
+}
+
+.carousel-card {
+  width: 100%;
+  display: flex;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.carousel-card img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 20px;
+}
+
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.navigation-button {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.prev-button {
+  top: 10px;
+}
+
+.next-button {
+  bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .carousel-card {
+    flex-direction: column;
+  }
+  
+  .carousel-card img {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+}
 

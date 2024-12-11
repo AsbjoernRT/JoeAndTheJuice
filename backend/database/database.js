@@ -319,6 +319,25 @@ async searchStores(searchTerm) {
   }
 }
 
+// Search products via an input field that gets the value searchTerm
+async searchProducts(searchTerm) {
+  await this.connectToDatabase();
+  console.log('Searching for products:', searchTerm);
+  
+  try {
+    const request = this.pool.request();
+    const result = await request
+      .input('searchTerm', sql.NVarChar, `%${searchTerm}%`)
+      .query(`SELECT productID, productName, productPrice, productCategory 
+             FROM joeAndTheJuice.products 
+             WHERE productName LIKE @searchTerm`);
+    return result.recordset;
+  } catch (error) {
+    console.error('Error searching for products:', error);
+    throw error;
+  }
+}
+
 async createOrder(userID, storeID, productQuantities) {
   console.log('Creating order for user:', userID, 'store:', storeID, 'products:', productQuantities);
   
