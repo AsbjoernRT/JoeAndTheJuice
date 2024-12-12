@@ -78,7 +78,7 @@ function createProductCard(product) {
   card.className = 'product-card';
 
   card.innerHTML = `
-    <img src="/images/products/${product.productID}.jpg" 
+    <img src="/frontend/assets/${product.productID}.jpg" 
          alt="${product.productName}" 
          onerror="this.src='/assets/joe americano.jpg'">
     <h3>${product.productName}</h3>
