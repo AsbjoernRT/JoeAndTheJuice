@@ -2,7 +2,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
   console.log(`Current path: ${path}`);
-
+  
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get("session_id");
 
@@ -64,21 +64,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const currentRoute = routes[path];
 
-  // If the route is defined
+  // // If the route is defined
+  // if (currentRoute) {
+  //   // Check authentication requirement
+  //   if (currentRoute.requiresAuth) {
+  //     const loggedIn = await checkLoginStatus();
+  //     if (!loggedIn) {
+  //       // If not logged in and route requires auth, redirect to login
+  //       console.log("User not logged in, redirecting to /login");
+  //       window.location.href = "/login";
+  //       return;
+  //     }
+  //     // If logged in, proceed
+  //     currentRoute.action();
+  //   } else {
+  //     // If no auth required, run action directly
+  //     currentRoute.action();
+  //   }
+
   if (currentRoute) {
-    // Check authentication requirement
     if (currentRoute.requiresAuth) {
-      const loggedIn = await checkLoginStatus();
-      if (!loggedIn) {
-        // If not logged in and route requires auth, redirect to login
-        console.log("User not logged in, redirecting to /login");
-        window.location.href = "/login";
+      const isLoggedIn = await checkLoginStatus();
+      if (!isLoggedIn) {
+        window.location.href = '/login';
         return;
       }
-      // If logged in, proceed
+    
+      // No longer call checkLoginStatus(). Instead, just try to run the route.
+      // If your protected calls fail (401), handle it in those calls.
       currentRoute.action();
     } else {
-      // If no auth required, run action directly
       currentRoute.action();
     }
   } else {

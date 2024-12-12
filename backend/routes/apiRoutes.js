@@ -6,40 +6,18 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const database = require("../database/database");
 const { register } = require("../controllers/signupController");
 const loginController = require("../controllers/loginController");
-const { checkUserExists } = require("../controllers/authController");
-// const { sendVerificationCode, checkVerificationCode } = checkVerification;
+const { checkUserExists,logout } = require("../controllers/authController");
 const { checkVerificationCode, sendVerificationCode } = require("../controllers/smsController");
-const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
-
-
 const { callOpenAI } = require("../controllers/chatController");
-// Import the Stripe controllers
 const { createCheckoutSession } = require('../controllers/stripeController');
 const { createOrder } = require("../controllers/orderController");
 
-// Protect all routes under '/api'
-router.use(authenticateToken);
+
 router.use(express.json());
 
-// Stripe
-// Add route to trigger sync
-router.post("/sync-products-to-stripe", async (req, res) => {
-  try {
-    await syncProductsToStripe();
 
-    res.json({
-      success: true,
-      message: "Products synced to Stripe successfully",
-    });
-  } catch (error) {
-    console.error("Sync error:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to sync products" });
-  }
-});
-
-// Auth routes
+//** Public Routes **
+// Register
 router.post("/register", async (req, res) => {
   try {
     await register(req, res);
@@ -53,6 +31,71 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Login
+router.post("/login", loginController.login);
+// Define the logout route
+router.post("/logout", logout);
+
+// backend/routes/apiRoutes.js
+
+router.get("/loginStatus", (req, res) => {
+  console.log("Login Status",req.cookies.token);
+  
+  if (req.cookies.token) {
+    res.json({ loggedIn: true });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+
+// Check if user exists
+router.post("/checkUserExists", (req, res) => {
+  checkUserExists(req, res);
+});
+
+// Send verification code
+router.post("/sendVerificationCode", async (req, res) => {
+  const phone = req.body.phoneNumber;
+  try {
+    const result = await sendVerificationCode(phone);
+    res.json(result); // Send resultatet tilbage til klienten
+  } catch (error) {
+    console.error("Error sending verification code:", error);
+    res.status(500).json({ success: false, message: "Failed to send verification code." });
+  }
+});
+
+// Get cart
+router.get("/cart", (req, res) => {
+  console.log("Session cart:", req.session.cart);
+
+  const cart = req.session.cart || []; // Fallback til tom array
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  res.json({
+    success: true,
+    totalItems: totalItems,
+    cart: cart,
+  });
+});
+
+// Get all products
+router.get("/allProducts", async (req, res) => {
+  try {
+    const products = await database.getProductsWithIngredients();
+    res.json(products);
+  } catch (err) {
+    console.error("Error fetching products:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch products" });
+  }
+});
+// ** Protect all routes under '/api'
+router.use(authenticateToken);
+
+
 router.post("/sessionInfo", (req, res) => {
   req.session.info = req.body;
   res.json({ success: true });
@@ -65,34 +108,6 @@ router.get("/getSignupInfo", (req, res) => {
     res.status(200).json(req.session);
   } else {
     res.status(400).json({ success: false, message: "No signup info found." });
-  }
-});
-
-router.post("/login", loginController.login);
-router.post("/checkUserExists", (req, res) => {
-  checkUserExists(req, res);
-});
-router.post("/sendVerificationCode", async (req, res) => {
-  const phone = req.body.phoneNumber;
-  try {
-    const result = await sendVerificationCode(phone);
-    res.json(result); // Send resultatet tilbage til klienten
-  } catch (error) {
-    console.error("Error sending verification code:", error);
-    res.status(500).json({ success: false, message: "Failed to send verification code." });
-  }
-});
-
-
-router.get("/loginStatus", (req, res) => {
-
-
-  if (req.session.loggedIn) {  
-   console.log("Session loggedIn:", req.session.loggedIn);
-    res.json({ loggedIn: true });
-  } else {
-    console.log("Session loggedIn:", req.session);
-    res.json({ loggedIn: false });
   }
 });
 
@@ -125,18 +140,6 @@ router.get("/products", authenticateToken, async (req, res) => {
 
 router.post("/chat", callOpenAI);
 
-router.get("/cart", (req, res) => {
-  console.log("Session cart:", req.session.cart);
-
-  const cart = req.session.cart || []; // Fallback til tom array
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  res.json({
-    success: true,
-    totalItems: totalItems,
-    cart: cart,
-  });
-});
 
 router.post("/get_product_by_name_and_category", async (req, res) => {
   const { product_name, product_category } = req.body;
@@ -168,37 +171,6 @@ router.post("/get_product_by_name_and_category", async (req, res) => {
   }
 });
 
-router.post("/order", authenticateToken,(req,res) => {
-  const { sessionId } = req.body;
-  const sessionOrder = req.session.order;
-
-  console.log("Creating order with session ID for :", sessionId, "Order:", sessionOrder);
-  
-
-  if (!sessionOrder || !sessionId) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Missing order data or session ID' 
-    });
-  }
-  
-  if (sessionId === sessionOrder.sessionId) {
-    console.log("So far so good...");
-
-    // Extract order data from session
-    const orderData = {
-      userID: sessionOrder.userID,
-      storeID: sessionOrder.storeID,
-      storeName: sessionOrder.storeName,
-      products: sessionOrder.products
-    };
-
-
-    createOrder(req, res);
-  } else {
-    res.status(200).json({ success: false, message: 'Invalid session ID.' });
-  }
-}); 
 
 router.post("/stores", async (req, res) => {
   console.log("Finding stores...", req.body);
@@ -240,17 +212,6 @@ router.get("/store_search", async (req, res) => {
   }
 });
 
-router.get("/allProducts", async (req, res) => {
-  try {
-    const products = await database.getProductsWithIngredients();
-    res.json(products);
-  } catch (err) {
-    console.error("Error fetching products:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch products" });
-  }
-});
 
 router.post("/cart/add", (req, res) => {
   try {
@@ -291,36 +252,45 @@ router.post("/cart/add", (req, res) => {
 
 // Define the route
 router.post('/checkout', async (req, res) => {
-  console.log("Creating checkout session...", req.body);
+  console.log("Creating checkout session...", req.body, "&", req.session);
   
   createCheckoutSession(req, res);
-  // const prizeId = await 
-  // console.log("Creating checkout session...", req.body.cart);
-  
-  // try {
-  //   const session = await stripe.checkout.sessions.create({
-  //     line_items: req.body.cart.map((item) => {
-  //       return {
-  //         price_data: {
-  //           currency: 'dkk',
-  //           product_data: {
-  //             name: item.productName,
-  //           },
-  //           unit_amount: item.productPrice * 100,
-  //         },
-  //         quantity: item.quantity,
-  //       };
-  //     }),
-  //     mode: 'payment',
-  //     success_url: 'http://localhost:3000/success',
-  //     cancel_url: 'http://localhost:3000/cancel',
-  //   });
-
-  //   res.json({ id: session.id });
-  // } catch (error) {
-  //   console.error("Error creating checkout session:", error);
-  //   res.status(500).json({ success: false, message: "Failed to create checkout session." });
-  // }
 });
+
+// Define the order route
+router.post("/order",(req,res) => {
+  const { sessionId } = req.body;
+  const sessionOrder = req.session.order;
+  console.log("Session",req.session, "&",req.body);
+  
+
+  console.log("Creating order with session ID for :", sessionId, "Order:", sessionOrder);
+  
+
+  if (!sessionOrder || !sessionId) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Missing order data or session ID' 
+    });
+  }
+  
+  if (sessionId === sessionOrder.sessionId) {
+    console.log("So far so good...");
+
+    // Extract order data from session
+    const orderData = {
+      userID: sessionOrder.userID,
+      storeID: sessionOrder.storeID,
+      storeName: sessionOrder.storeName,
+      products: sessionOrder.products
+    };
+
+
+    createOrder(req, res);
+  } else {
+    console.log("Could not create order with session ID for :", sessionId, "Order:", sessionOrder);
+    res.status(200).json({ success: false, message: 'Invalid session ID.' });
+  }
+}); 
 
 module.exports = router;
