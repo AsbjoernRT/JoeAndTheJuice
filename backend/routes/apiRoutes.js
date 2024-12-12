@@ -11,6 +11,7 @@ const { checkVerificationCode, sendVerificationCode } = require("../controllers/
 const { callOpenAI } = require("../controllers/chatController");
 const { createCheckoutSession } = require('../controllers/stripeController');
 const { createOrder } = require("../controllers/orderController");
+const rateLimit = require("express-rate-limit");
 
 
 router.use(express.json());
@@ -54,8 +55,27 @@ router.post("/checkUserExists", (req, res) => {
   checkUserExists(req, res);
 });
 
+// Limit to 3 requests per hour per IP
+const phoneVerificationLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // Max 3 requests per hour
+  message: {
+    success: false,
+    message: "Too many requests. Please try again later.",
+  },
+});
+
 // Send verification code
-router.post("/sendVerificationCode", async (req, res) => {
+router.post("/sendVerificationCode", phoneVerificationLimiter, async (req, res) => {
+
+  // Check if the user has a valid session
+  if (!req.session) {
+    console.error("Session missing. Cannot send verification code.", req.session);
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized access. Please log in first.",
+    });
+  }
   const phone = req.body.phoneNumber;
   try {
     const result = await sendVerificationCode(phone);

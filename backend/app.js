@@ -29,11 +29,11 @@ app.use((req, res, next) => {
   
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: process.env.SESSION_SECRET || 'your_session_secret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      // secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       // sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours

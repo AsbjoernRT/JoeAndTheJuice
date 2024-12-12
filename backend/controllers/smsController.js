@@ -14,6 +14,10 @@ const client = twilio(accountSid, authToken);
 
 // Funktion til at sende en verifikationskode
 async function sendVerificationCode(phone) {
+  //check if session exists
+   
+
+  // Correct phone number format
   let phoneNumber;
   if (!phone.startsWith("+45")) {
     phoneNumber = "+45" + phone;
@@ -31,6 +35,9 @@ async function sendVerificationCode(phone) {
     );
     return { success: true, message: "Verification code sent successfully." };
   } catch (error) {
+    if (error.code === 60203) {
+      return { success: false, message: 'Max send attempts reached. Please try again later.' };
+    }
     console.error("Error sending verification code:", error);
     return { success: false, message: "Failed to send verification code." };
   }
