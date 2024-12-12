@@ -3,6 +3,9 @@ async function signUpFunction() {
     const verificationForm = document.querySelector(".verification-form");
   
     const userInfo = await getUserInfo();
+    console.log("Brugerdata fundet i sessionen:", userInfo);
+    
+    
   
     if (!userInfo || !userInfo.info) {
         alert("Failed to retrieve user information. Please try again.");

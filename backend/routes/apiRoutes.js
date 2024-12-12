@@ -92,14 +92,6 @@ router.get("/allProducts", async (req, res) => {
       .json({ success: false, message: "Failed to fetch products" });
   }
 });
-// ** Protect all routes under '/api'
-router.use(authenticateToken);
-
-
-router.post("/sessionInfo", (req, res) => {
-  req.session.info = req.body;
-  res.json({ success: true });
-});
 
 router.get("/getSignupInfo", (req, res) => {
   console.log("Session info:", req.session.info);
@@ -111,6 +103,22 @@ router.get("/getSignupInfo", (req, res) => {
   }
 });
 
+router.post("/sessionInfo", (req, res) => {
+  req.session.info = req.body;
+  res.json({ success: true });
+});
+
+router.post("/checkVerificationCode",(req,res) => {
+  checkVerificationCode(req,res);
+});
+// ** Protect all routes under '/api'
+router.use(authenticateToken);
+
+
+
+
+
+
 router.get("/userData", (req, res) => {
   console.log("Session user:", req.session.user);
   
@@ -119,11 +127,6 @@ router.get("/userData", (req, res) => {
   } else {
     res.json({ success: false, message: "No user data available in session." });
   }
-});
-
-
-router.post("/checkVerificationCode",(req,res) => {
-  checkVerificationCode(req,res);
 });
 
 router.get("/products", authenticateToken, async (req, res) => {
