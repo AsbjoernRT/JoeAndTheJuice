@@ -3,6 +3,7 @@ async function getAllProducts() {
   try {
     const response = await fetch('/api/allProducts', {
       method: 'GET',
+      // include: 'credentials',
       headers: { 'Content-Type': 'application/json' },
     });
 

@@ -119,6 +119,7 @@ async function handleUserMessage(userMessage) {
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
+      credentials: 'include', // ensures cookies are sent
       headers: {
         "Content-Type": "application/json",
       },

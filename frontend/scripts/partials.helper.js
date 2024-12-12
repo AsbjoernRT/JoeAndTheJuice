@@ -76,3 +76,47 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Hamburger or menu elements not found in DOM.');
     }
   }
+
+  // Create function to check login status and update nav
+function updateLoginStatus() {
+  const loginItem = document.querySelector('#loginItem');
+  const session = req.session?.loggedIn; // Check session from cookie
+
+  if (session) {
+    loginItem.innerHTML = `
+      <a href="#" onclick="handleLogout(event)" class="nav-link">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    `;
+  } else {
+    loginItem.innerHTML = `
+      <a href="/login" class="nav-link">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </a>
+    `;
+  }}
+// Logout handler
+async function logout() {
+  console.log('Logging out...');
+  
+  // event.preventDefault();
+  
+  try {
+    const response = await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+
+    // Clear tokens
+    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
+    if (response.ok) {
+      window.location.href = '/login';
+    } else {
+      console.error('Logout failed:', await response.json());
+    }
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+}

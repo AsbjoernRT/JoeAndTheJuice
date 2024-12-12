@@ -4,8 +4,9 @@
 async function addToCart(productID, productName, productPrice) {
   try {
     // Send produktdata til backend for at opdatere kurven
-    const response = await fetch("/api/cart/add", {
+    const response = await fetchWithAuth("/api/cart/add", {
       method: "POST",
+    //   credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productID: productID,
@@ -102,6 +103,7 @@ async function verifyOrder(sessionId) {
   try {
     const response = await fetch("/api/order", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -119,23 +121,25 @@ async function verifyOrder(sessionId) {
 // checkout.js
 
 async function populateUserDetails() {
-    try {
-      // Fetch user data from the server
-      const userData = await fetchUserData();
-      if (!userData) return;
-  
-      // Populate the form with user data
-      populateFormFields(userData);
-  
-      console.log("Form populated with user data from session storage.");
-    } catch (error) {
-      console.error("Error populating user details:", error);
-    }
+  try {
+    // Fetch user data from the server
+    const userData = await fetchUserData();
+    if (!userData) return;
+
+    // Populate the form with user data
+    populateFormFields(userData);
+
+    console.log("Form populated with user data from session storage.");
+  } catch (error) {
+    console.error("Error populating user details:", error);
   }
+}
 
 async function fetchUserData() {
   try {
-    const response = await fetch("/api/userData");
+    const response = await fetch("/api/userData", {
+      credentials: "include",
+    });
     const data = await response.json();
 
     if (data.success && data.user) {
@@ -152,32 +156,29 @@ async function fetchUserData() {
   }
 }
 
-
 // Populate form fields with user data
 function populateFormFields(userData) {
-    if (!userData) {
-      console.log("No user data found in session storage.");
-      return;
-    }
-  
-    const formFields = [
-      { id: "email", value: userData.email },
-    ];
-  
-    formFields.forEach(({ id, value }) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.value = value || "";
-      } else {
-        console.warn(`Element with ID "${id}" not found.`);
-      }
-    });
-  
-    const searchInput = document.getElementById("searchInput");
-    if (searchInput) {
-      searchInput.value = userData.selectedStore || "";
-    }
+  if (!userData) {
+    console.log("No user data found in session storage.");
+    return;
   }
+
+  const formFields = [{ id: "email", value: userData.email }];
+
+  formFields.forEach(({ id, value }) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.value = value || "";
+    } else {
+      console.warn(`Element with ID "${id}" not found.`);
+    }
+  });
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.value = userData.selectedStore || "";
+  }
+}
 
 async function handlePayNowClick(event) {
   event.preventDefault();
@@ -218,6 +219,7 @@ async function handlePayNowClick(event) {
 
     const response = await fetch("api/checkout", {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });

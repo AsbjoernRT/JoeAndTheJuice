@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const viewController = require('../controllers/viewController');
+// const { authenticateToken } = require("../controllers/jwtToken");
 
 // Define view routes
 router.get('/', viewController.getHomePage);
@@ -15,5 +16,8 @@ router.get('/footer', viewController.getFooter);
 router.get('/login', viewController.getLogin);
 router.get('/signup', viewController.getSignup);
 router.get('/authentication', viewController.getAuthentication);
+
+// Protected Pages
+// router.use(authenticateToken);
 
 module.exports = router;
