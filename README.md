@@ -26,11 +26,19 @@ Joeandthejuicechatbot.software Chatbot er en innovativ udvidelse af Joe & the Ju
 
 ---
 
+## Forudsætninger for at kunne køre repositoriet lokalt
+- Homebrew
+- Node.js
+- Git
+
 ## Kør Projektet Lokalt 🖥️
 1. Clone repository ved hjælp af denne command: git clone https://github.com/AsbjoernRT/JoeAndTheJuice
 2. Opret en kopi af filen `.env.example.joechatbot` og omdøb den til `.env`.
 3. Udfyld de nødvendige miljøvariabler i din nye `.env`-fil, ellers kan application ikke køre korrekt.
-4. Kør `node server.js` for at starte serveren
+4. Inden vi installere Redis, indsættes `redis.conf` der er redis serverens config fil.
+5. Installer Redis via Homebrew således: `Brew install redis` og kør her efter: `brew services start redis`
+6. Bekræft at Redis kører. Kør denne funktion `redis-cli ping`- her forventes output: PONG
+7. Kør `node server.js` for at starte serveren
 
 Nu kan du åbne en af vores mange porte der er skabt via Redis evt. enten http://localhost:3001 eller http://localhost:3002
 
