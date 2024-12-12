@@ -54,7 +54,7 @@ async function signUpFunction() {
   
               if (createUserResponse.ok && createUserResult.success) {
                 alert("Signup successful!");
-                window.location.href = "/login";
+                window.location.href = "/";
               } else {
                 alert("Error creating user: " + createUserResult.message);
               }
