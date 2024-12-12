@@ -42,6 +42,9 @@ Du kan også nu efter du har kørt det lokalt besøge vores live projekt, som er
 
 ---
 
-## Opgaven er lavet af
+## Opgaven er lavet af ⌨️
 
 - **Mathias Hylleberg, 170839**
+- **Asbjørn Thomsen - 171390**
+- **Martin Myrthue Pilkær - 168887**
+- **Clara Lykke Bastiansen - 168877**
