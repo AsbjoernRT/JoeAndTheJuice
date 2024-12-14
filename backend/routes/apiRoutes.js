@@ -1,7 +1,7 @@
 // backend/routes/apiRoutes.js
 const express = require("express");
 const router = express.Router();
-const { authenticateToken } = require("../controllers/jwtToken");
+const { authenticateToken } = require("../controllers/cryptoController");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const database = require("../database/database");
 const { register } = require("../controllers/signupController");

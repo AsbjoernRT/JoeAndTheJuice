@@ -1,5 +1,5 @@
 const database = require("../database/database");
-const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
+const { decryptWithPrivateKey } = require("../controllers/cryptoController");
 const { sendVerificationCode } = require("./smsController");
 const { user } = require("../database/config");
 const jwt = require("jsonwebtoken");

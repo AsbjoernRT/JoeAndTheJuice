@@ -124,7 +124,7 @@ async function getPriceForProduct(productID) {
         line_items: lineItems,
         mode: 'payment',
         success_url: `${process.env.CLIENT_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.CLIENT_URL}/cancel.html`,
+        cancel_url: `${process.env.CLIENT_URL}/cart`,
         customer_email: req.session.user.email, // Add prefilled email here
       });
 

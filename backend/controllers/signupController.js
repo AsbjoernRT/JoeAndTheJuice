@@ -1,9 +1,7 @@
 const database = require("../database/database");
-const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
-const { encryptWithPublicKey } = require("../controllers/encryptionUtils");
-const { sendVerificationCode } = require("./smsController");
-const jwt = require("jsonwebtoken");
-const e = require("express");
+const { encryptWithPublicKey,decryptWithPrivateKey } = require("../controllers/cryptoController");
+// const { sendVerificationCode } = require("../smsController");
+
 // `register`-funktion
  async function register(req, res) {
   try {

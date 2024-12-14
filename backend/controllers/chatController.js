@@ -5,7 +5,8 @@ const axios = require('axios');
 
 // OpenAI API Key
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
+const ASSISTANT_ID = 'asst_LxkBBNQlhyH3jWK6H0vWofft'
+let GPT = "gpt-4o"
 // Kontroller, om API-nøglen er indlæst
 if (!OPENAI_API_KEY) {
     console.error(
@@ -109,11 +110,34 @@ if (!OPENAI_API_KEY) {
 async function callOpenAI(req, res) {
 const { messages } = req.body;
 
+// Tilføj systemprompt som første besked
+if (!messages.some(msg => msg.role === "system")) {
+  messages.unshift({
+    role: "system",
+    content: `Du er JOE-sephine, den officielle chatbot for Joe & The Juice. 
+Din opgave er at hjælpe kunder med produktanbefalinger, bestillinger og almindelige spørgsmål. 
+
+**Produktpræsentation:**  
+- Præsenter produkter kort og præcist uden at bruge ** (fremhævning).  
+- Ingredienser bør kun nævnes, hvis de er centrale for svaret.  
+
+**Tone of Voice:**  
+- Vær hjælpsom, positiv og professionel.  
+- Reflekter Joe & The Juice’s energiske og venlige atmosfære.  
+
+**Fejlhåndtering:**  
+- Brug venlige og positive fejlmeddelelser.  
+- Eksempel: “Oops! Noget gik galt. Prøv igen, så blander jeg det bedre næste gang!”  
+`,
+  });
+}
+
   try {
     let response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
+      // `https://api.openai.com/v1/assistants/${ASSISTANT_ID}/chat`,
       {
-        model: "gpt-4o", // Sørg for, at dette er et gyldigt modelnavn
+        model: GPT, // Sørg for, at dette er et gyldigt modelnavn  "gpt-4o"
         messages: messages,
         functions: functions,
         function_call: "auto",
@@ -279,8 +303,9 @@ const { messages } = req.body;
       // Send den opdaterede samtale tilbage til OpenAI
       response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
+        // `https://api.openai.com/v1/assistants/${ASSISTANT_ID}/chat`,
         {
-          model: "gpt-4o",
+          model: GPT,
           messages: messages,
           functions: functions,
           function_call: "auto",

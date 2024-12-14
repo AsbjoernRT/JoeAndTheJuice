@@ -1,10 +1,7 @@
 //auth controller
 
 const database = require("../database/database");
-const { decryptWithPrivateKey } = require("../controllers/encryptionUtils");
-const { sendVerificationCode } = require("./smsController");
-const jwt = require("jsonwebtoken");
-const session = require("express-session");
+const { decryptWithPrivateKey } = require("../controllers/cryptoController");
 
 async function checkUserExists(req, res) {
     console.log("Checking if user exists...", req.body);

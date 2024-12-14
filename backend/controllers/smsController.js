@@ -1,7 +1,6 @@
 require("dotenv").config(); // Indlæs miljøvariabler fra .env-filen
 const database = require("../database/database");
 const jwt = require("jsonwebtoken");
-const { decryptWithPrivateKey } = require("./encryptionUtils"); // Opdater stien hvis nødvendigt
 const twilio = require("twilio");
 
 // Twilio-legitimationsoplysninger indlæst fra miljøvariabler

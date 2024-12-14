@@ -104,7 +104,7 @@ function storeSearch() {
       productCard.classList.add("product-card");
       
       productCard.innerHTML = `
-        <img src="/assets/products/${item.productID}.jpg" alt="${item.productName}" 
+        <img src="/assets/${item.productID}.jpg" alt="${item.productName}" 
              onerror="this.src='/assets/joe americano.jpg'">
         <div class="product-info">
           <h3>${item.productName}</h3>

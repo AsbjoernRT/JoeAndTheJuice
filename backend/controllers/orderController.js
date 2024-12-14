@@ -1,6 +1,5 @@
 // controllers/orderController.js
 const database = require("../database/database");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { formatProductsForSMS, sendSMS } = require("./smsController");
 
 exports.createOrder = async (req, res) => {

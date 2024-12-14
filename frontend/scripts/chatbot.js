@@ -18,12 +18,14 @@ const orderButton = document.querySelector(".hero-button");
 // Åbn chatbot modal
 chatbotToggle.addEventListener("click", () => {
   chatbotModal.style.display = "block";
+  showWelcomeMessage(); // Vis startbesked
 });
 
 // Åbn chatbot modal ved at klikke på order now knap
 orderButton.addEventListener("click", () => {
   chatbotModal.style.display = "block";
   console.log("knap trykket");
+  showWelcomeMessage(); // Vis startbesked
 });
 
 // Luk chatbot modal
@@ -60,7 +62,7 @@ function appendMessage(sender, message, options = {}) {
     const botIcon = document.createElement("img");
     botIcon.src = "/assets/Joe billede.svg"; // Opdater stien til dit ikon
     botIcon.alt = "Chatbot";
-    botIcon.classList.add("chatbot-icon");
+    botIcon.classList.add("chatbot-message-icon");
 
     senderElement.appendChild(botIcon); // Add the icon to senderElement
     messageElement.appendChild(senderElement);
@@ -105,8 +107,22 @@ async function handleUserMessage(userMessage) {
   if (conversationHistory.length === 0) {
     const systemMessage = {
       role: "system",
-      content:
-        "Du er en hjælpsom chatbot for Joe & The Juice. Når brugeren indikerer, at de er klar til at gennemføre deres køb (f.eks. siger 'Jeg er klar til at betale' eller 'Jeg vil gerne checke ud'), skal du kalde 'checkout' funktionen. Efter at have kaldt funktionen, skal du informere brugeren om, at de kan klikke på checkout-knappen for at fuldføre deres køb. Når du prestenere produkter er det vigtigt ikke at bruge ** i din besked, dertil behøver du ikke nævne alle ingredientserne. ",
+      content: `
+      Du er JOE-sephine, den officielle chatbot for Joe & The Juice. 
+      Din opgave er at hjælpe kunder med produktanbefalinger, bestillinger og almindelige spørgsmål. 
+
+      **Produktpræsentation:**  
+      - Præsenter produkter kort og præcist uden at bruge ** (fremhævning) eller lign. tegn.  
+      - Ingredienser bør kun nævnes, hvis de er centrale for svaret.  
+
+      **Tone of Voice:**  
+    - Vær hjælpsom, positiv og professionel.  
+    - Reflekter Joe & The Juice’s energiske og venlige atmosfære.  
+
+    **Fejlhåndtering:**  
+    - Brug venlige og positive fejlmeddelelser.  
+    - Eksempel: “Oops! Noget gik galt. Prøv igen, så blander jeg det bedre næste gang!”  
+`,
     };
     conversationHistory.push(systemMessage);
   }
@@ -119,7 +135,7 @@ async function handleUserMessage(userMessage) {
   try {
     const response = await fetch("/api/chat", {
       method: "POST",
-      credentials: 'include', // ensures cookies are sent
+      credentials: "include", // ensures cookies are sent
       headers: {
         "Content-Type": "application/json",
       },
@@ -195,6 +211,13 @@ async function handleUserMessage(userMessage) {
 
 // Implementer funktionerne
 
+function showWelcomeMessage() {
+  // Undgå at vise beskeden flere gange
+  if (conversationHistory.length === 0) {
+    const welcomeMessage = "Hej! Jeg er JOE-sephine. Hvordan kan jeg hjælpe dig i dag?";
+    appendMessage("Chatbot", welcomeMessage);
+  }
+}
 
 // Add this new function
 function typeWriter(text, element, speed = 50) {
