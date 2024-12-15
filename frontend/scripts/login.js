@@ -9,8 +9,6 @@ function setupLoginForm() {
       const password = document.getElementById("password").value;
 
       try {
-        console.log("Login request sent for email:", email);
-
         // Send login-data som POST-request
         const response = await fetch("/api/login", {
           method: "POST",
@@ -23,16 +21,15 @@ function setupLoginForm() {
         const result = await response.json();
         
         if (response.ok) {
-            console.log("Login successful for user:", result.user);
           
-            // Check if the user is a master user and should skip verification
+            // Checker om brugeren er masterbrugeren, så vi kan skippe to-faktor-verificering
             if (result.skipVerification) {
               alert("Login successful! Welcome back.");
-              window.location.href = "/"; // Redirect to home page for master user
+              window.location.href = "/";
               return;
             }
           
-            // Handle regular user login with verification
+            // Håndter user login med verificering
             alert(
               "A verification code has been sent to your phone. Please enter the code to verify your phone number."
             );
@@ -42,27 +39,6 @@ function setupLoginForm() {
             console.error("Login failed:", result.message);
             alert(result.message || "Login failed. Please try again.");
           }
-
-
-
-
-        // if (response.ok) {
-        //   console.log("Login successful for user:", result.user);
-        //   if (result.exists) {
-        //     alert("A verification code has been sent to your phone. Please enter the code to verify your phone number.");
-        //     window.location.href = "/authentication"; // Omdiriger til verificeringssiden
-        //   } else {
-        //     console.error("User does not exist.");
-        //     alert("User does not exist. Please try again.");
-        //   }
-        //   return result.exists;
-        // } 
-        // // // Gem brugerdata i sessionStorage
-        // // sessionStorage.setItem('user', JSON.stringify(result.user));
-        // // sessionStorage.setItem('isVerified', false); // Initial status - not verified
-        // else {
-        //   console.error("Login failed:", result.message);
-        //   alert(result.message || "Login failed. Please try again.");
         
       } catch (error) {
         console.error("Error during login:", error);

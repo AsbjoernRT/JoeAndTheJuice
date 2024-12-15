@@ -19,7 +19,6 @@ async function addToCart(productID, productName, productPrice) {
     const result = await response.json();
 
     if (result.success) {
-      console.log("Cart updated in backend:", result.cart);
 
       // Opdater sessionStorage med backendens seneste kurv
       sessionStorage.setItem("cart", JSON.stringify(result.cart));
@@ -111,7 +110,6 @@ async function verifyOrder(sessionId) {
     });
 
     const result = await response.json();
-    console.log("Order verification result:", result);
   } catch (error) {
     console.error("Error verifying order:", error);
   }
@@ -129,7 +127,6 @@ async function populateUserDetails() {
     // Populate the form with user data
     populateFormFields(userData);
 
-    console.log("Form populated with user data from session storage.");
   } catch (error) {
     console.error("Error populating user details:", error);
   }
@@ -143,7 +140,6 @@ async function fetchUserData() {
     const data = await response.json();
 
     if (data.success && data.user) {
-      console.log("User data fetched:", data.user);
       sessionStorage.setItem("userData", JSON.stringify(data.user));
       return data.user;
     } else {
@@ -159,7 +155,6 @@ async function fetchUserData() {
 // Populate form fields with user data
 function populateFormFields(userData) {
   if (!userData) {
-    console.log("No user data found in session storage.");
     return;
   }
 
@@ -215,7 +210,6 @@ async function handlePayNowClick(event) {
     }
 
     const payload = { userID, storeID, storeName, products };
-    console.log("Payload to send:", payload);
 
     const response = await fetch("api/checkout", {
       method: "POST",
@@ -225,7 +219,6 @@ async function handlePayNowClick(event) {
     });
 
     const result = await response.json();
-    console.log("Order response:", result);
     if (response.ok && result.success) {
       window.location.href = result.url; // Stripe checkout redirect
     } else {

@@ -1,23 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Header container
     const headerContainer = document.querySelector('#partial-container');
   
     if (headerContainer) {
-      console.log('Header-container fundet i DOM:', headerContainer);
   
-      fetch('/header') // Fetch anmoder om header.html fra serveren
+      fetch('/header') 
         .then((response) => {
-          console.log('Header fetch status:', response.status);
           if (!response.ok) {
             throw new Error('Fetch fejlede for header med status: ' + response.status);
           }
           return response.text();
         })
         .then((html) => {
-          // console.log('Header HTML fetched:', html);
-          headerContainer.innerHTML = html; // Indsætter header HTML i containeren
+          headerContainer.innerHTML = html; 
   
-          // Initialize hamburger menu functionality
           initializeHamburgerMenu();
         })
         .catch((error) => {
@@ -34,15 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
       fetch('/footer')
         .then((response) => {
-          console.log('Footer fetch status:', response.status);
           if (!response.ok) {
             throw new Error('Fetch fejlede for footer med status: ' + response.status);
           }
           return response.text();
         })
         .then((html) => {
-          // console.log('Footer HTML fetched:', html);
-          footerContainer.innerHTML = html; // Indsætter footer HTML i containeren
+          footerContainer.innerHTML = html;
         })
         .catch((error) => {
           console.error('Fejl under fetch af footer:', error);
@@ -59,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hamburger && menu) {
       // Toggle menu visibility
       hamburger.addEventListener('click', (event) => {
-        event.stopPropagation(); // Forhindr klik på hamburgeren i at lukke menuen
+        event.stopPropagation(); 
         menu.classList.toggle('active');
       });
   
@@ -71,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
   
-      console.log('Hamburger menu initialized.');
     } else {
       console.error('Hamburger or menu elements not found in DOM.');
     }
@@ -95,11 +87,9 @@ function updateLoginStatus() {
       </a>
     `;
   }}
+  
 // Logout handler
 async function logout() {
-  console.log('Logging out...');
-  
-  // event.preventDefault();
   
   try {
     const response = await fetch('/api/logout', {
