@@ -137,7 +137,7 @@ Din opgave er at hjælpe kunder med produktanbefalinger, bestillinger og alminde
       "https://api.openai.com/v1/chat/completions",
       // `https://api.openai.com/v1/assistants/${ASSISTANT_ID}/chat`,
       {
-        model: GPT, // Sørg for, at dette er et gyldigt modelnavn  "gpt-4o"
+        model: GPT,
         messages: messages,
         functions: functions,
         function_call: "auto",

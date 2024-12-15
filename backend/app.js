@@ -35,7 +35,7 @@ app.use((req, res, next) => {
     cookie: {
       // secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      // sameSite: 'strict',
+      sameSite: 'strict',
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   })(req, res, next);
