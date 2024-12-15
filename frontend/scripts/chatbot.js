@@ -59,14 +59,15 @@ function appendMessage(sender, message, options = {}) {
   // Hvis afsenderen er Chatbot, indsæt ikon
   if (sender === "Chatbot") {
     const botIcon = document.createElement("img");
-    botIcon.src = "/assets/Joe billede.svg"; // Opdater stien til dit ikon
+    botIcon.src = "/assets/Joe billede.svg";
     botIcon.alt = "Chatbot";
     botIcon.classList.add("chatbot-message-icon");
 
-    senderElement.appendChild(botIcon); // Add the icon to senderElement
+    senderElement.appendChild(botIcon);
     messageElement.appendChild(senderElement);
     messageElement.appendChild(messageContent);
     typeWriter(message, messageContent);
+
     // senderElement.appendChild(botIcon);
   } else {
     messageElement.classList.add("user");
@@ -74,10 +75,6 @@ function appendMessage(sender, message, options = {}) {
     messageElement.appendChild(senderElement);
     messageElement.appendChild(messageContent);
   }
-
-  // Saml beskedelementet
-  // messageElement.appendChild(senderElement);
-  // messageElement.appendChild(messageContent);
 
   // Håndter eventuelle ekstra muligheder (f.eks. knapper)
   if (options.showCheckoutButton) {
@@ -158,12 +155,6 @@ async function handleUserMessage(userMessage) {
         function_call: assistantMessage.function_call,
       });
 
-      console.log("Function Name:", assistantMessage.function_call.name);
-      console.log(
-        "Function Arguments:",
-        assistantMessage.function_call.arguments
-      );
-
       // Hvis funktionen er 'checkout', sæt flaget
       if (assistantMessage.function_call.name === "checkout") {
         showCheckoutButton = true;
@@ -172,9 +163,6 @@ async function handleUserMessage(userMessage) {
       // Send en tom brugerbesked for at få assistentens svar efter funktionskaldet
       await handleUserMessage("");
     } else {
-      // Tilføj assistentens svar til historikken
-      // conversationHistory.push(assistantMessage);
-      // Tilføj assistentens svar til historikken
       conversationHistory.push({
         role: "assistant",
         content: assistantMessage.content || "",

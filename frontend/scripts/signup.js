@@ -161,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const verificationResult = await verificationResponse.json();
   
       if (verificationResult.success === true) {
-        console.log("Verification code sent successfully to:", phoneNumber);
         alert(
           "A verification code has been sent to your phone. Please enter the code to verify your phone number."
         );

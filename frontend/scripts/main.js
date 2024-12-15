@@ -4,24 +4,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get("session_id");
 
-  // Define routes and their requirements
+  // Definere routes og deres krav
   const routes = {
     "/signup": {
       requiresAuth: false,
       action: () => {
-        // Ryk signup logik herind.
       
       },
     },
     "/authentication": {
       requiresAuth: false,
       action: () => {
-        // Ryk authentication logik herind.
         signUpFunction();
       },
     },
     "/": {
-      requiresAuth: true, // Home page requires login in this scenario
+      requiresAuth: true, 
       action: () => {
         displayProducts();
       },
@@ -55,30 +53,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       requiresAuth: false,
       action: () => {
         setupLoginForm(); 
-        // Login page logic
       },
     }
   };
 
   const currentRoute = routes[path];
-
-  // // If the route is defined
-  // if (currentRoute) {
-  //   // Check authentication requirement
-  //   if (currentRoute.requiresAuth) {
-  //     const loggedIn = await checkLoginStatus();
-  //     if (!loggedIn) {
-  //       // If not logged in and route requires auth, redirect to login
-  //       console.log("User not logged in, redirecting to /login");
-  //       window.location.href = "/login";
-  //       return;
-  //     }
-  //     // If logged in, proceed
-  //     currentRoute.action();
-  //   } else {
-  //     // If no auth required, run action directly
-  //     currentRoute.action();
-  //   }
 
   if (currentRoute) {
     if (currentRoute.requiresAuth) {
@@ -88,17 +67,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
     
-      // No longer call checkLoginStatus(). Instead, just try to run the route.
-      // If your protected calls fail (401), handle it in those calls.
       currentRoute.action();
     } else {
       currentRoute.action();
     }
   } else {
     console.warn(`No route handler defined for path: ${path}`);
-    // Optionally load a default page or 404 here
   }
 
-  // Update the cart badge on every page load
   setTimeout(updateCartBadge, 500);
 });
