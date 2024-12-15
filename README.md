@@ -68,7 +68,7 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
 - Uden en lokal NginX-konfiguration vil applikationen ikke være tilgængelig fra port 3000.
 - Du kan i stedet tilgå den direkte via:
   - `http://localhost:3001`
-  - `http://localhost:3002`.
+  - `http://localhost:3002`
 
 ## Stripe Betalingsdetaljer 💳
 
