@@ -45,7 +45,6 @@ function storeSearch() {
     selectedItemData = {};
     document.getElementById("searchInput").value = item.storeName;
   
-    // Tjek om `selectedItem` elementet findes
     const selectedItemElement = document.getElementById("selectedItem");
     if (selectedItemElement) {
       selectedItemElement.textContent = `Selected Item: ${item.storeName}`;

@@ -25,7 +25,6 @@ async function getAllProducts() {
 
 // products.js
 async function displayProducts() {
-  console.log('Fetching products...');
   const products = await getAllProducts(); // Should be the array of products
 
   if (!products || !Array.isArray(products)) {
