@@ -3,11 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerContainer = document.querySelector('#partial-container');
   
     if (headerContainer) {
-      console.log('Header-container fundet i DOM:', headerContainer);
   
       fetch('/header') // Fetch anmoder om header.html fra serveren
         .then((response) => {
-          console.log('Header fetch status:', response.status);
           if (!response.ok) {
             throw new Error('Fetch fejlede for header med status: ' + response.status);
           }
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
   
-      console.log('Hamburger menu initialized.');
     } else {
       console.error('Hamburger or menu elements not found in DOM.');
     }
