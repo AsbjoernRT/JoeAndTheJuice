@@ -37,32 +37,28 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
  ### Kør Projektet Lokalt 🖥️
 
 1. **Opret og konfigurer .env-filen**:
-   - Tilføj en `.env`-fil til dit projekt.
-   - **Vigtigt:** Sørg for at placere `.env`-filen i projektets hovedmappe/src mappen.
+   - Tilføj den vedhæftede `.env`-fil til dit projekt.
+   - **Vigtigt:** Sørg for at placere `.env`-filen i projektets hovedmappe/src mappe
 
 2. **Konfigurer Redis**:
-   - Tilføj `redis.conf`, som er Redis-serverens konfigurationsfil.
-   - **Vigtigt:** Sørg for at placere `redis.conf` i projektets hovedmappe.
+   - Tilføj `redis.conf`, som er Redis-serverens konfigurationsfil, den ligger også som vedhæftet.
+   - **Vigtigt:** Sørg for at placere `redis.conf` i projektets hovedmappe/src mappe
 
 3. **Installer Redis via Homebrew**:
    - Udfør følgende kommandoer i terminalen:
-     ```bash
-     brew install redis
-     brew services start redis
-     ```
+     `brew install redis`
+     `brew services start redis`
 
 4. **Bekræft, at Redis fungerer**:
    - Test Redis ved at køre følgende kommando:
-     ```bash
-     redis-cli ping
-     ```
+     `redis-cli ping`
+
    - Hvis alt fungerer korrekt, vil du se outputtet: `PONG`.
 
 5. **Start serveren**:
    - Start applikationen ved at køre:
-     ```bash
-     node server.js
-     ```
+     `node server.js`
+
 
 **Bemærk**:
 - Uden en lokal NginX-konfiguration vil applikationen ikke være tilgængelig fra port 3000.
