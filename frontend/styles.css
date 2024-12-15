@@ -383,7 +383,7 @@ header {
     font-weight: bold;
 }
 
-.order-total {
+.order-details {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
@@ -392,6 +392,15 @@ header {
 .order-total.total {
     font-size: 18px;
     font-weight: bold;
+}
+
+/* Styling for order summary and customer details */
+.order-summary-section, .customer-details-section {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Footer */

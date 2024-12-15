@@ -6,7 +6,7 @@ async function addToCart(productID, productName, productPrice) {
     // Send produktdata til backend for at opdatere kurven
     const response = await fetchWithAuth("/api/cart/add", {
       method: "POST",
-    //   credentials: "include",
+      //   credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productID: productID,
@@ -244,5 +244,50 @@ function setupPayNowButton() {
   if (payNowButton) {
     payNowButton.removeEventListener("click", handlePayNowClick); // ensure no double binding
     payNowButton.addEventListener("click", handlePayNowClick);
+  }
+}
+
+async function displayOrder(sessionId) {
+  console.log("Getting order details for session:", sessionId);
+
+  try {
+    const response = await fetch(`/api/orderInfo?sessionId=${sessionId}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+    console.log("Order verification result:", result);
+    if (result.success && result.order) {
+      const order = result.order;
+
+      const detailsHTML = `
+  <div class="order-summary-section">
+    <h2>Order Summary</h2>
+    <p><strong>Order ID:</strong> ${order.id}</p>
+    <p><strong>Status:</strong> ${order.status}</p>
+    <p><strong>Payment Status:</strong> ${order.payment_status}</p>
+    <p><strong>Total Amount:</strong> ${(order.amount_total / 100).toFixed(
+      2
+    )} ${order.currency.toUpperCase()}</p>
+  </div>
+
+  <div class="customer-details-section">
+    <h2>Customer Details</h2>
+    <p><strong>Name:</strong> ${order.customer_details.name}</p>
+    <p><strong>Email:</strong> ${order.customer_email}</p>
+  </div>
+`;
+      document.getElementById("order-details").innerHTML = detailsHTML;
+    } else {
+      document.getElementById(
+        "order-details"
+      ).innerHTML = `<p>Order not found.</p>`;
+    }
+  } catch (error) {
+    console.error("Error verifying order:", error);
   }
 }

@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (sessionId) {
           console.log("Checkout session ID:", sessionId);
           verifyOrder(sessionId);
+          displayOrder(sessionId);
         }
       },
     },

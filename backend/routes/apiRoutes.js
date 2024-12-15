@@ -9,7 +9,7 @@ const loginController = require("../controllers/loginController");
 const { checkUserExists,logout } = require("../controllers/authController");
 const { checkVerificationCode, sendVerificationCode } = require("../controllers/smsController");
 const { callOpenAI } = require("../controllers/chatController");
-const { createCheckoutSession } = require('../controllers/stripeController');
+const { createCheckoutSession, getLatestOrder } = require('../controllers/stripeController');
 const { createOrder } = require("../controllers/orderController");
 const rateLimit = require("express-rate-limit");
 
@@ -315,5 +315,30 @@ router.post("/order",(req,res) => {
     res.status(200).json({ success: false, message: 'Invalid session ID.' });
   }
 }); 
+
+router.get("/orderInfo", async (req, res) => {
+  console.log("Getting order details for session:", req.query.sessionId);
+
+  const sessionId = req.query.sessionId;
+
+  if (!sessionId) {
+    return res.status(400).json({ success: false, message: "Session ID is required." });
+  }
+
+  try {
+    const lastOrder = await getLatestOrder(sessionId);
+
+    if (!lastOrder) {
+      console.log("Order not found for session:", sessionId);
+      return res.status(404).json({ success: false, message: "Order not found." });
+    }
+
+    console.log("Order found:", lastOrder);
+    return res.status(200).json({ success: true, order: lastOrder });
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    return res.status(500).json({ success: false, message: "Failed to retrieve order." });
+  }
+});
 
 module.exports = router;

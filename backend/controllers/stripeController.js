@@ -139,6 +139,18 @@ async function getPriceForProduct(productID) {
     }
   }
 
+  async function getLatestOrder(sessionId, res) {
+  
+      const order = await stripe.checkout.sessions.retrieve(sessionId);
+      console.log('Order retrieved:', order);
+
+      if (!order || !order.payment_status) {
+        return res.status(400).json({ success: false, message: 'No order found for the given session ID.' });
+      }
+
+      return order;
+    }
+
   module.exports = {
-    createCheckoutSession, 
+    createCheckoutSession, getLatestOrder
   };
