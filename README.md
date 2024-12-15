@@ -31,7 +31,6 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
 
 ### Installer nødvendige pakker
 
-	•	Homebrew: Pakkehåndtering til macOS
 	•	Node.js: JavaScript-runtime
 
  ### Kør Projektet Lokalt 🖥️
@@ -46,19 +45,12 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
 
 3. **Installer Redis via Homebrew**:
    - Udfør følgende kommandoer i terminalen:
-     `brew install redis`
-     `brew services start redis`
+     `npm install redis`
+     Kør nu kommandoen `redis-server redis.conf`
 
-4. **Bekræft, at Redis fungerer**:
-   - Test Redis ved at køre følgende kommando:
-     `redis-cli ping`
-
-   - Hvis alt fungerer korrekt, vil du se outputtet: `PONG`.
-
-5. **Start serveren**:
+4. **Start serveren**:
    - Start applikationen ved at køre:
      `node server.js`
-
 
 **Bemærk**:
 - Uden en lokal NginX-konfiguration vil applikationen ikke være tilgængelig fra port 3000.
