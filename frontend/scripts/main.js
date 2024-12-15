@@ -1,8 +1,6 @@
 //Main.js Controls all dom functions.
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  console.log(`Current path: ${path}`);
-  
   const urlParams = new URLSearchParams(window.location.search);
   const sessionId = urlParams.get("session_id");
 
