@@ -24,7 +24,6 @@ chatbotToggle.addEventListener("click", () => {
 // Åbn chatbot modal ved at klikke på order now knap
 orderButton.addEventListener("click", () => {
   chatbotModal.style.display = "block";
-  console.log("knap trykket");
   showWelcomeMessage(); // Vis startbesked
 });
 

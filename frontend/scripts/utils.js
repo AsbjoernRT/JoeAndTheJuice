@@ -37,7 +37,6 @@ async function updateCartBadge() {
     try {
       const response = await fetch("/api/cart");
       const data = await response.json();
-      console.log(data);
   
       if (data.success) {
         const cartBadge = document.getElementById("cart-badge");
@@ -59,7 +58,6 @@ async function updateCartBadge() {
 
   
   async function checkLoginStatus() {
-    console.log("Checking login status...");
     try {
       const response = await fetch('/api/loginStatus', {
         credentials: 'include' // Ensure cookies are sent
@@ -69,7 +67,6 @@ async function updateCartBadge() {
         return false;
       }
       const data = await response.json();
-      console.log("Login status:", data);
       return data.loggedIn;
     } catch (error) {
       console.error("Error checking login status:", error);

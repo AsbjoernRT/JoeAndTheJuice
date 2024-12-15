@@ -3,7 +3,6 @@ async function getAllProducts() {
   try {
     const response = await fetch('/api/allProducts', {
       method: 'GET',
-      // include: 'credentials',
       headers: { 'Content-Type': 'application/json' },
     });
 
@@ -28,7 +27,6 @@ async function getAllProducts() {
 async function displayProducts() {
   console.log('Fetching products...');
   const products = await getAllProducts(); // Should be the array of products
-  console.log('Products received:', products);
 
   if (!products || !Array.isArray(products)) {
     console.error('Invalid products data:', products);
