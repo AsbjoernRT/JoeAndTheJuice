@@ -1,3 +1,4 @@
 .env
 redis.conf
 noMoreUse.js
+dump.rdb
