@@ -50,6 +50,42 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
 
 	Bemærk: Uden lokal NginX-konfiguration kan applikationen ikke tilgås fra port 3000, men direkte via f.eks. http://localhost:3001 eller http://localhost:3002.
 
+ ### Kør Projektet Lokalt 🖥️
+
+1. **Opret og konfigurer .env-filen**:
+   - Tilføj en `.env`-fil til dit projekt.
+   - **Vigtigt:** Sørg for at placere `.env`-filen i projektets hovedmappe/src mappen.
+
+2. **Konfigurer Redis**:
+   - Tilføj `redis.conf`, som er Redis-serverens konfigurationsfil.
+   - **Vigtigt:** Sørg for at placere `redis.conf` i projektets hovedmappe.
+
+3. **Installer Redis via Homebrew**:
+   - Udfør følgende kommandoer i terminalen:
+     ```bash
+     brew install redis
+     brew services start redis
+     ```
+
+4. **Bekræft, at Redis fungerer**:
+   - Test Redis ved at køre følgende kommando:
+     ```bash
+     redis-cli ping
+     ```
+   - Hvis alt fungerer korrekt, vil du se outputtet: `PONG`.
+
+5. **Start serveren**:
+   - Start applikationen ved at køre:
+     ```bash
+     node server.js
+     ```
+
+**Bemærk**:
+- Uden en lokal NginX-konfiguration vil applikationen ikke være tilgængelig fra port 3000.
+- Du kan i stedet tilgå den direkte via:
+  - `http://localhost:3001`
+  - `http://localhost:3002`.
+
 ### Kør Projektet Lokalt 🖥️
 
 1.	Opret og konfigurer .env-filen:
@@ -65,7 +101,7 @@ Joeandthejuicechatbot.software er en innovativ udvidelse af Joe & The Juice’s 
 3. 	Installer Redis via Homebrew:
 
 	•	Udfør følgende kommandoer i terminalen:
-   		`brew install redis  `
+   		`brew install redis`
    		`brew services start redis`   
 
 4.	Bekræft, at Redis fungerer:
