@@ -16,7 +16,6 @@ function storeSearch() {
           fetch("/api/store_search?searchTerm=" + searchTerm)
             .then((res) => res.json())
             .then((res) => {
-              console.log("Frontend", res);
               displayResults(res);
             });
         } else {
@@ -49,7 +48,6 @@ function storeSearch() {
     if (selectedItemElement) {
       selectedItemElement.textContent = `Selected Item: ${item.storeName}`;
     } else {
-      console.log('Element with ID "selectedItem" not found.');
     }
   
     document.getElementById("searchResults").innerHTML = "";
@@ -83,8 +81,7 @@ function storeSearch() {
         if (searchTerm.length > 1) {
           fetch("/api/productSearch?searchTerm=" + encodeURIComponent(searchTerm))
             .then((res) => res.json())
-            .then((res) => {
-              console.log("Product search results:", res);
+            .then((res) => {z
               displayProductResults(res);
             });
         } else {
@@ -127,7 +124,6 @@ function storeSearch() {
     if (selectedItemElement) {
       selectedItemElement.textContent = `Selected Item: ${item.productName}`;
     } else {
-      console.log('Element with ID "selectedItem" not found.');
     }
   
     document.getElementById("searchResults").innerHTML = "";
