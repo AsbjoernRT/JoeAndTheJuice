@@ -13,7 +13,7 @@ function storeSearch() {
         var searchTerm = inputElement.value; // Gemmer den indtastede søgeværdi
         if (searchTerm.length > 1) {
           // Sikrer at der er mindst 2 tegn før søgning
-          fetch("/api/store_search?searchTerm=" + searchTerm)
+          fetch("/api/storeSearch?searchTerm=" + searchTerm)
             .then((res) => res.json())
             .then((res) => {
               displayResults(res);

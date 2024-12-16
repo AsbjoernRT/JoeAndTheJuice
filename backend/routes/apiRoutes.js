@@ -223,7 +223,7 @@ router.get("/productSearch", async (req, res) => {
 });
 
 // Route til søgning af stores.
-router.get("/store_search", async (req, res) => {
+router.get("/storeSearch", async (req, res) => {
   // console.log(req);
   try {
     const result = await database.searchStores(req.query.searchTerm);
