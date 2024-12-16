@@ -131,14 +131,14 @@ router.post("/sessionInfo", (req, res) => {
 router.post("/checkVerificationCode",(req,res) => {
   checkVerificationCode(req,res);
 });
+
 // ** Protect all routes under '/api'
 router.use(authenticateToken);
 
+//Chatbot
+router.post("/chat", callOpenAI);
 
-
-
-
-
+//login check
 router.get("/userData", (req, res) => {
   console.log("Session user:", req.session.user);
   
@@ -161,7 +161,6 @@ router.get("/products", authenticateToken, async (req, res) => {
   }
 });
 
-router.post("/chat", callOpenAI);
 
 
 router.post("/get_product_by_name_and_category", async (req, res) => {
